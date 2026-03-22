@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Converter - File Converter</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/themes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Glass Navbar Styles */
+        :root { --glass-bg: rgba(255, 255, 255, 0.1); --glass-border: rgba(255, 255, 255, 0.2); --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }
+        body.glass-effect { background: linear-gradient(135deg, #000000 0%, #121212 25%, #1a1a1a 50%, #121212 75%, #000000 100%); min-height: 100vh; position: relative; overflow-x: hidden; }
+        .glass-bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 50%, rgba(138, 43, 226, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(147, 112, 219, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 80%, rgba(75, 0, 130, 0.1) 0%, transparent 50%); z-index: -1; }
+        .glass-navbar { background: var(--glass-bg); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-bottom: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); position: sticky; top: 0; z-index: 1000; padding: 1rem 2rem; }
+        .glass-navbar .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
+        .glass-logo { display: flex; align-items: center; gap: 12px; font-size: 1.8rem; font-weight: bold; color: white; text-decoration: none; }
+        .glass-logo i { font-size: 2.2rem; background: linear-gradient(135deg, var(--primary-color), #9370db); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass-container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; position: relative; z-index: 1; }
+        .nav-links { display: flex; gap: 1rem; align-items: center; }
+        .glass-nav-link { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); color: white; text-decoration: none; padding: 0.8rem 1.5rem; border-radius: 12px; transition: all 0.3s; display: flex; align-items: center; gap: 8px; font-weight: 500; }
+        .glass-nav-link:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
+        
+        /* Navigation Dropdown Styles */
+        .nav-dropdown { position: relative; }
+        .nav-dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 0.5rem; min-width: 200px; z-index: 1000; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); margin-top: 0.5rem; }
+        .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+        .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 0.8rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; border-radius: 8px; transition: all 0.3s; }
+        .dropdown-item:hover { background: rgba(138, 43, 226, 0.2); color: white; }
+        .dropdown-item.active { background: rgba(138, 43, 226, 0.3); color: white; }
+        .dropdown-item i { width: 20px; text-align: center; }
+        
+        /* Audio Converter Specific Styles */
+        .audio-converter-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-top: 2rem;
+        }
+
+        .audio-upload-area {
+            border: 3px dashed var(--primary-color);
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(138, 43, 226, 0.05);
+        }
+
+        .audio-upload-area:hover {
+            background: rgba(138, 43, 226, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .audio-upload-area i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .audio-preview-section {
+            display: none;
+            margin: 2rem 0;
+        }
+
+        .audio-preview-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .audio-player-wrapper {
+            background: #000;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        #audioPlayer {
+            width: 100%;
+            height: 50px;
+        }
+
+        .audio-waveform-container {
+            height: 80px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .waveform-bars {
+            display: flex;
+            align-items: flex-end;
+            height: 100%;
+            padding: 0 10px;
+            gap: 2px;
+        }
+
+        .waveform-bar {
+            width: 3px;
+            background: var(--primary-color);
+            border-radius: 2px;
+            animation: wave 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes wave {
+            from { height: 10%; }
+            to { height: 90%; }
+        }
+
+        .audio-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .audio-info-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .audio-info-card i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .audio-format-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .audio-format-option {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .audio-format-option:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+
+        .audio-format-option.selected {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .audio-format-option.selected i {
+            color: white;
+        }
+
+        .audio-format-option i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .format-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .audio-settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .settings-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+        }
+
+        .settings-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .settings-group h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .slider-container {
+            margin: 1.5rem 0;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .slider-value {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .channel-options {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .channel-option {
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+            flex: 1;
+            text-align: center;
+        }
+
+        .channel-option:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .channel-option.selected {
+            background: var(--primary-color);
+            color: white;
+            border-color: white;
+        }
+
+        .audio-convert-btn {
+            background: linear-gradient(135deg, var(--primary-color), #4b0082);
+            color: white;
+            border: none;
+            padding: 1.2rem 3rem;
+            font-size: 1.2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            display: block;
+            margin: 3rem auto;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .audio-convert-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(138, 43, 226, 0.4);
+        }
+
+        .audio-convert-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .conversion-progress-audio {
+            display: none;
+            text-align: center;
+            margin: 2rem 0;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+
+        .download-section-audio {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+            background: rgba(138, 43, 226, 0.1);
+            border-radius: 15px;
+            margin: 2rem 0;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .download-section-audio.active {
+            display: block;
+        }
+
+        .download-options-audio {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .download-btn-audio {
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s;
+            min-width: 200px;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .download-btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .download-btn-secondary {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .download-btn-audio:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .audio-converter-container {
+                padding: 1.5rem;
+            }
+            
+            .audio-upload-area {
+                padding: 2rem 1rem;
+            }
+            
+            .audio-format-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .audio-settings-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .download-options-audio {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .download-btn-audio {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .audio-format-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="glass-effect" data-theme="dark">
+    <div class="glass-bg-overlay"></div>
+    
+    <!-- Glass Navbar -->
+    <nav class="glass-navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="glass-logo">
+                <i class="fas fa-exchange-alt"></i>
+                <span>FileConverter</span>
+            </a>
+            <div class="nav-links">
+                <a href="../index.html" class="glass-nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="contact.html" class="glass-nav-link"><i class="fas fa-envelope"></i> Contact Us</a>
+                <a href="account.html" class="glass-nav-link" id="userLink">
+                    <img id="navProfilePic" src="" style="width: 25px; height: 25px; border-radius: 50%; display: none; margin-right: 5px;">
+                    <i class="fas fa-user-circle"></i> <span id="userText">Account</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="glass-container">
+        <div class="audio-converter-container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1><i class="fas fa-music"></i> Audio Converter</h1>
+                <p>Convert audio files between MP3, WAV, AAC, FLAC, OGG, and more with high quality</p>
+            </div>
+
+            <!-- Upload Area -->
+            <div class="audio-upload-area" id="audioUploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Drag & Drop your audio files here</h3>
+                <p>or click to browse files</p>
+                <p class="file-info">Supports: MP3, WAV, AAC, FLAC, OGG, M4A, AIFF, WMA</p>
+                <p class="file-info">Max file size: 100MB</p>
+                <input type="file" id="audioFileInput" accept=".mp3,.wav,.aac,.flac,.ogg,.m4a,.aiff,.wma" hidden>
+            </div>
+
+            <!-- Audio Preview -->
+            <div class="audio-preview-section" id="audioPreviewSection">
+                <h3><i class="fas fa-headphones"></i> Audio Preview</h3>
+                <div class="audio-player-wrapper">
+                    <audio id="audioPlayer" controls>
+                        Your browser does not support the audio tag.
+                    </audio>
+                    <div class="audio-waveform-container">
+                        <div class="waveform-bars" id="waveformBars"></div>
+                    </div>
+                </div>
+
+                <!-- Audio Info -->
+                <div class="audio-info-grid">
+                    <div class="audio-info-card">
+                        <i class="fas fa-file-audio"></i>
+                        <h4 id="audioFileName">audio.mp3</h4>
+                        <p>File Name</p>
+                    </div>
+                    <div class="audio-info-card">
+                        <i class="fas fa-clock"></i>
+                        <h4 id="audioDuration">0:00</h4>
+                        <p>Duration</p>
+                    </div>
+                    <div class="audio-info-card">
+                        <i class="fas fa-weight-hanging"></i>
+                        <h4 id="audioSize">0 MB</h4>
+                        <p>File Size</p>
+                    </div>
+                    <div class="audio-info-card">
+                        <i class="fas fa-music"></i>
+                        <h4 id="audioFormat">MP3</h4>
+                        <p>Format</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conversion Settings -->
+            <div class="conversion-settings">
+                <h2><i class="fas fa-sliders-h"></i> Conversion Settings</h2>
+                
+                <!-- Format Selection -->
+                <div class="section">
+                    <h3><i class="fas fa-format"></i> Output Format</h3>
+                    <div class="audio-format-options">
+                        <div class="audio-format-option selected" data-format="mp3">
+                            <i class="fas fa-file-audio"></i>
+                            <h4>MP3</h4>
+                            <p>MPEG Audio Layer III</p>
+                            <div class="format-badge">Universal</div>
+                        </div>
+                        
+                        <div class="audio-format-option" data-format="wav">
+                            <i class="fas fa-file-audio"></i>
+                            <h4>WAV</h4>
+                            <p>Waveform Audio File</p>
+                            <div class="format-badge">Lossless</div>
+                        </div>
+                        
+                        <div class="audio-format-option" data-format="flac">
+                            <i class="fas fa-file-audio"></i>
+                            <h4>FLAC</h4>
+                            <p>Free Lossless Audio</p>
+                            <div class="format-badge">High Quality</div>
+                        </div>
+                        
+                        <div class="audio-format-option" data-format="aac">
+                            <i class="fas fa-file-audio"></i>
+                            <h4>AAC</h4>
+                            <p>Advanced Audio Coding</p>
+                            <div class="format-badge">Apple</div>
+                        </div>
+                        
+                        <div class="audio-format-option" data-format="ogg">
+                            <i class="fas fa-file-audio"></i>
+                            <h4>OGG</h4>
+                            <p>Ogg Vorbis</p>
+                            <div class="format-badge">Open Source</div>
+                        </div>
+                        
+                        <div class="audio-format-option" data-format="m4a">
+                            <i class="fas fa-file-audio"></i>
+                            <h4>M4A</h4>
+                            <p>MPEG-4 Audio</p>
+                            <div class="format-badge">iTunes</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audio Settings Grid -->
+                <div class="audio-settings-grid">
+                    <!-- Quality Settings -->
+                    <div class="settings-section">
+                        <h3><i class="fas fa-tachometer-alt"></i> Quality Settings</h3>
+                        
+                        <div class="settings-group">
+                            <h4><i class="fas fa-bolt"></i> Bitrate</h4>
+                            <div class="slider-container">
+                                <input type="range" class="slider" id="bitrateSlider" min="64" max="320" value="320" step="32">
+                                <div class="slider-labels">
+                                    <span>64 kbps</span>
+                                    <span class="slider-value" id="bitrateValue">320 kbps</span>
+                                    <span>320 kbps</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
+                            <h4><i class="fas fa-wave-square"></i> Sample Rate</h4>
+                            <div class="slider-container">
+                                <input type="range" class="slider" id="sampleRateSlider" min="8000" max="48000" value="44100" step="8000">
+                                <div class="slider-labels">
+                                    <span>8 kHz</span>
+                                    <span class="slider-value" id="sampleRateValue">44.1 kHz</span>
+                                    <span>48 kHz</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
+                            <h4><i class="fas fa-volume-up"></i> Channels</h4>
+                            <div class="channel-options">
+                                <div class="channel-option" data-channel="1">
+                                    <i class="fas fa-bullhorn"></i>
+                                    <div>Mono</div>
+                                </div>
+                                <div class="channel-option selected" data-channel="2">
+                                    <i class="fas fa-volume-up"></i>
+                                    <div>Stereo</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preset Settings -->
+                    <div class="settings-section">
+                        <h3><i class="fas fa-magic"></i> Quality Presets</h3>
+                        
+                        <div class="settings-group">
+                            <div class="quality-preset-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                                <div class="quality-preset selected" data-preset="high" style="padding: 1.5rem; background: rgba(255,255,255,0.05); border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.3s;">
+                                    <i class="fas fa-crown" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 0.5rem;"></i>
+                                    <div>High Quality</div>
+                                    <small style="color: #aaa;">320 kbps</small>
+                                </div>
+                                <div class="quality-preset" data-preset="medium" style="padding: 1.5rem; background: rgba(255,255,255,0.05); border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.3s;">
+                                    <i class="fas fa-balance-scale" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 0.5rem;"></i>
+                                    <div>Medium</div>
+                                    <small style="color: #aaa;">192 kbps</small>
+                                </div>
+                                <div class="quality-preset" data-preset="low" style="padding: 1.5rem; background: rgba(255,255,255,0.05); border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.3s;">
+                                    <i class="fas fa-bolt" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 0.5rem;"></i>
+                                    <div>Low</div>
+                                    <small style="color: #aaa;">128 kbps</small>
+                                </div>
+                                <div class="quality-preset" data-preset="voice" style="padding: 1.5rem; background: rgba(255,255,255,0.05); border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.3s;">
+                                    <i class="fas fa-microphone" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 0.5rem;"></i>
+                                    <div>Voice</div>
+                                    <small style="color: #aaa;">64 kbps</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Convert Button -->
+                <button class="audio-convert-btn" id="audioConvertBtn" disabled>
+                    <i class="fas fa-sync-alt"></i> Convert Audio
+                </button>
+            </div>
+
+            <!-- Conversion Progress -->
+            <div class="conversion-progress-audio" id="conversionProgress">
+                <h3><i class="fas fa-sync fa-spin"></i> Converting Audio...</h3>
+                <p id="progressStatus" style="margin-top: 1rem;">Processing audio file...</p>
+                <div class="slider-container" style="max-width: 300px; margin: 2rem auto;">
+                    <div style="background: rgba(255,255,255,0.1); height: 10px; border-radius: 5px; overflow: hidden;">
+                        <div id="progressBar" style="background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s;"></div>
+                    </div>
+                    <div class="slider-labels">
+                        <span id="progressPercent">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Download Section -->
+            <div class="download-section-audio" id="downloadSection">
+                <h3><i class="fas fa-check-circle" style="color: #4ade80;"></i> Conversion Complete!</h3>
+                <p>Your audio file has been converted successfully</p>
+
+                <div class="download-options-audio">
+                    <a href="#" class="download-btn-audio download-btn-primary" id="downloadAudioBtn">
+                        <i class="fas fa-download"></i> Download Audio
+                    </a>
+                    <button class="download-btn-audio download-btn-secondary" id="previewAudioBtn">
+                        <i class="fas fa-play"></i> Play Converted
+                    </button>
+                    <button class="download-btn-audio download-btn-secondary" onclick="convertAnother()">
+                        <i class="fas fa-redo"></i> Convert Another
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/converters.js"></script>
+    <script>
+        // Audio Converter Variables
+        let selectedAudioFile = null;
+        let audioPlayer = document.getElementById('audioPlayer');
+        let selectedFormat = 'mp3';
+        let selectedChannels = 2;
+        let conversionActive = false;
+        let convertedFileUrl = null;
+        let convertedFilename = null;
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAudioConverter();
+            setupEventListeners();
+            generateWaveform();
+            checkUserLogin();
+        });
+
+        function checkUserLogin() {
+            const token = localStorage.getItem('token');
+            const userText = document.getElementById('userText');
+            const navProfilePic = document.getElementById('navProfilePic');
+            const userIcon = document.querySelector('#userLink .fa-user-circle');
+            
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    userText.textContent = payload.email ? payload.email.split('@')[0] : 'Account';
+                    
+                    // Load profile picture
+                    const userData = JSON.parse(localStorage.getItem('user') || '{}');
+                    if (userData && userData.profile_picture) {
+                        navProfilePic.src = 'http://localhost:4000/api/files/profiles/' + userData.profile_picture;
+                        navProfilePic.style.display = 'block';
+                        if (userIcon) userIcon.style.display = 'none';
+                    }
+                } catch(e) {
+                    userText.textContent = 'Account';
+                }
+            } else {
+                userText.textContent = 'Login';
+                navProfilePic.style.display = 'none';
+                if (userIcon) userIcon.style.display = 'inline-block';
+            }
+        }
+
+        // Initialize audio converter
+        function initializeAudioConverter() {
+            console.log('Audio Converter Initialized');
+            initializeDragAndDropAudio();
+            selectFormat('mp3');
+            updateSliderValues();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Format selection
+            document.querySelectorAll('.audio-format-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    selectFormat(this.dataset.format);
+                });
+            });
+
+            // Channel selection
+            document.querySelectorAll('.channel-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    selectChannel(this.dataset.channel);
+                });
+            });
+
+            // Quality presets
+            document.querySelectorAll('.quality-preset').forEach(preset => {
+                preset.addEventListener('click', function() {
+                    selectQualityPreset(this.dataset.preset);
+                });
+            });
+
+            // Sliders
+            document.getElementById('bitrateSlider').addEventListener('input', updateSliderValues);
+            document.getElementById('sampleRateSlider').addEventListener('input', updateSliderValues);
+
+            // Convert button
+            document.getElementById('audioConvertBtn').addEventListener('click', startConversion);
+
+            // Download buttons
+            document.getElementById('previewAudioBtn')?.addEventListener('click', previewConvertedAudio);
+            document.getElementById('downloadAudioBtn')?.addEventListener('click', downloadAudio);
+        }
+
+        // Generate waveform visualization
+        function generateWaveform() {
+            const waveformBars = document.getElementById('waveformBars');
+            if (!waveformBars) return;
+            
+            for (let i = 0; i < 50; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'waveform-bar';
+                bar.style.height = Math.random() * 80 + 10 + '%';
+                bar.style.animationDelay = i * 0.02 + 's';
+                waveformBars.appendChild(bar);
+            }
+        }
+
+        // Initialize drag and drop for audio
+        function initializeDragAndDropAudio() {
+            const uploadArea = document.getElementById('audioUploadArea');
+            const fileInput = document.getElementById('audioFileInput');
+
+            if (!uploadArea || !fileInput) return;
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                uploadArea.style.backgroundColor = 'rgba(138, 43, 226, 0.2)';
+            }
+
+            function unhighlight() {
+                uploadArea.style.backgroundColor = '';
+            }
+
+            uploadArea.addEventListener('drop', handleDrop, false);
+            uploadArea.addEventListener('click', () => fileInput.click());
+
+            fileInput.addEventListener('change', handleFileInput);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleAudioFile(files[0]);
+            }
+
+            function handleFileInput(e) {
+                const files = e.target.files;
+                if (files.length > 0) {
+                    handleAudioFile(files[0]);
+                }
+            }
+        }
+
+        // Handle audio file upload
+        function handleAudioFile(file) {
+            if (!file.type.startsWith('audio/') && !file.name.match(/\.(mp3|wav|aac|flac|ogg|m4a|aiff|wma)$/i)) {
+                alert('Please upload an audio file!');
+                return;
+            }
+
+            selectedAudioFile = file;
+            
+            // Create object URL for audio
+            const audioURL = URL.createObjectURL(file);
+            audioPlayer.src = audioURL;
+            
+            // Show preview section
+            document.getElementById('audioPreviewSection').classList.add('active');
+            
+            // Update file info
+            document.getElementById('audioFileName').textContent = file.name;
+            document.getElementById('audioSize').textContent = (file.size / (1024 * 1024)).toFixed(1) + ' MB';
+            document.getElementById('audioFormat').textContent = file.name.split('.').pop().toUpperCase();
+            
+            // Get duration when metadata loaded
+            audioPlayer.addEventListener('loadedmetadata', function() {
+                document.getElementById('audioDuration').textContent = formatTime(audioPlayer.duration);
+            });
+            
+            // Update upload area
+            document.getElementById('audioUploadArea').innerHTML = `
+                <i class="fas fa-check-circle" style="color: #4ade80;"></i>
+                <h3>${file.name}</h3>
+                <p>Ready for conversion</p>
+                <p class="file-info">Click to select a different file</p>
+            `;
+            
+            document.getElementById('audioUploadArea').addEventListener('click', () => {
+                document.getElementById('audioFileInput').click();
+            });
+            
+            // Enable convert button
+            document.getElementById('audioConvertBtn').disabled = false;
+        }
+
+        // Format time (seconds to MM:SS)
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Select format
+        function selectFormat(format) {
+            selectedFormat = format;
+            document.querySelectorAll('.audio-format-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.querySelector(`.audio-format-option[data-format="${format}"]`).classList.add('selected');
+        }
+
+        // Select channel
+        function selectChannel(channel) {
+            selectedChannels = channel;
+            document.querySelectorAll('.channel-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.querySelector(`.channel-option[data-channel="${channel}"]`).classList.add('selected');
+        }
+
+        // Select quality preset
+        function selectQualityPreset(preset) {
+            document.querySelectorAll('.quality-preset').forEach(p => {
+                p.classList.remove('selected');
+                p.style.background = 'rgba(255,255,255,0.05)';
+            });
+            document.querySelector(`.quality-preset[data-preset="${preset}"]`).classList.add('selected');
+            document.querySelector(`.quality-preset[data-preset="${preset}"]`).style.background = 'var(--primary-color)';
+            
+            switch(preset) {
+                case 'high':
+                    document.getElementById('bitrateSlider').value = 320;
+                    document.getElementById('sampleRateSlider').value = 44100;
+                    break;
+                case 'medium':
+                    document.getElementById('bitrateSlider').value = 192;
+                    document.getElementById('sampleRateSlider').value = 44100;
+                    break;
+                case 'low':
+                    document.getElementById('bitrateSlider').value = 128;
+                    document.getElementById('sampleRateSlider').value = 22050;
+                    break;
+                case 'voice':
+                    document.getElementById('bitrateSlider').value = 64;
+                    document.getElementById('sampleRateSlider').value = 16000;
+                    break;
+            }
+            updateSliderValues();
+        }
+
+        // Update slider value displays
+        function updateSliderValues() {
+            document.getElementById('bitrateValue').textContent = document.getElementById('bitrateSlider').value + ' kbps';
+            document.getElementById('sampleRateValue').textContent = (document.getElementById('sampleRateSlider').value / 1000) + ' kHz';
+        }
+
+        // Start conversion
+        async function startConversion() {
+            if (conversionActive || !selectedAudioFile) return;
+            
+            conversionActive = true;
+            document.getElementById('conversionProgress').style.display = 'block';
+            document.getElementById('audioPreviewSection').style.display = 'none';
+            document.querySelector('.conversion-settings').style.display = 'none';
+            document.getElementById('audioConvertBtn').disabled = true;
+            
+            // Call actual API
+            try {
+                const result = await convertAudio(selectedAudioFile, selectedFormat, {
+                    bitrate: document.getElementById('bitrateSlider').value,
+                    sampleRate: document.getElementById('sampleRateSlider').value,
+                    channels: selectedChannels
+                }, (progress) => {
+                    document.getElementById('progressPercent').textContent = progress + '%';
+                    document.getElementById('progressBar').style.width = progress + '%';
+                });
+                
+                if (result.success) {
+                    // Show download section with actual URL
+                    convertedFileUrl = result.downloadUrl;
+                    convertedFilename = result.filename;
+                    document.getElementById('downloadAudioBtn').href = result.downloadUrl;
+                    completeConversion();
+                } else {
+                    alert('Conversion failed: ' + (result.error || 'Unknown error'));
+                    conversionActive = false;
+                    document.getElementById('audioConvertBtn').disabled = false;
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+                conversionActive = false;
+                document.getElementById('audioConvertBtn').disabled = false;
+            }
+        }
+
+        // Complete conversion
+        function completeConversion() {
+            document.getElementById('progressStatus').textContent = 'Conversion completed successfully!';
+            
+            setTimeout(() => {
+                document.getElementById('conversionProgress').style.display = 'none';
+                document.getElementById('downloadSection').classList.add('active');
+                document.getElementById('downloadSection').scrollIntoView({ behavior: 'smooth' });
+            }, 1000);
+            
+            conversionActive = false;
+        }
+
+        // Preview converted audio
+        function previewConvertedAudio() {
+            const downloadBtn = document.getElementById('downloadAudioBtn');
+            const downloadUrl = downloadBtn.href;
+            
+            if (downloadUrl && downloadUrl !== '#') {
+                const fullUrl = downloadUrl.startsWith('http') ? downloadUrl : 'http://localhost:4000' + downloadUrl;
+                audioPlayer.src = fullUrl;
+                audioPlayer.play();
+            } else {
+                alert('No file to preview. Please convert an audio first.');
+            }
+        }
+
+        // Download audio
+        function downloadAudio(e) {
+            e.preventDefault();
+            const downloadBtn = document.getElementById('downloadAudioBtn');
+            const downloadUrl = downloadBtn.href;
+            
+            if (downloadUrl && downloadUrl !== '#') {
+                // Use the downloadFile helper from converters.js
+                const filename = convertedFilename || `converted_audio.${selectedFormat}`;
+                downloadFile(downloadUrl, filename);
+            } else {
+                alert('No file available for download. Please convert an audio first.');
+            }
+        }
+
+        // Make sure event listener is properly attached
+        document.getElementById('downloadAudioBtn').addEventListener('click', downloadAudio);
+
+        // Convert another audio
+        function convertAnother() {
+            selectedAudioFile = null;
+            conversionActive = false;
+            convertedFileUrl = null;
+            convertedFilename = null;
+            document.getElementById('audioPreviewSection').classList.remove('active');
+            document.getElementById('audioPreviewSection').style.display = 'none';
+            document.querySelector('.conversion-settings').style.display = 'block';
+            document.getElementById('downloadSection').classList.remove('active');
+            document.getElementById('audioConvertBtn').disabled = true;
+            audioPlayer.src = '';
+            document.getElementById('audioUploadArea').innerHTML = `
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Drag & Drop your audio files here</h3>
+                <p>or click to browse files</p>
+                <p class="file-info">Supports: MP3, WAV, AAC, FLAC, OGG, M4A, AIFF, WMA</p>
+                <p class="file-info">Max file size: 100MB</p>
+            `;
+            initializeDragAndDropAudio();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Additional styles
+        const additionalStyles = document.createElement('style');
+        additionalStyles.textContent = `
+            .section { margin-bottom: 3rem; }
+            .section h3 { color: var(--primary-color); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+            .page-header { text-align: center; margin-bottom: 2rem; }
+            .page-header h1 { font-size: 2.5rem; color: white; margin-bottom: 0.5rem; }
+            .page-header p { color: rgba(255, 255, 255, 0.7); }
+            .quality-preset:hover { transform: scale(1.05); }
+            .quality-preset.selected { background: var(--primary-color) !important; color: white; }
+        `;
+        document.head.appendChild(additionalStyles);
+    </script>
+</body>
+</html>
+

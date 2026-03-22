@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Converter - Home</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --glass-bg: rgba(255, 255, 255, 0.1); --glass-border: rgba(255, 255, 255, 0.2); --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }
+        body.glass-effect { background: linear-gradient(135deg, #000000 0%, #121212 25%, #1a1a1a 50%, #121212 75%, #000000 100%); min-height: 100vh; position: relative; overflow-x: hidden; }
+        .glass-bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 50%, rgba(138, 43, 226, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(147, 112, 219, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 80%, rgba(75, 0, 130, 0.1) 0%, transparent 50%); z-index: -1; }
+        .glass-navbar { background: var(--glass-bg); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-bottom: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); position: sticky; top: 0; z-index: 1000; padding: 1rem 2rem; }
+        .glass-navbar .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
+        .glass-logo { display: flex; align-items: center; gap: 12px; font-size: 1.8rem; font-weight: bold; color: white; text-decoration: none; }
+        .glass-logo i { font-size: 2.2rem; background: linear-gradient(135deg, var(--primary-color), #9370db); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass-container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; position: relative; z-index: 1; }
+        .glass-converter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 4rem; }
+        .glass-card { background: var(--glass-bg); backdrop-filter: blur(15px) saturate(180%); -webkit-backdrop-filter: blur(15px) saturate(180%); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2.5rem; text-align: center; cursor: pointer; transition: all 0.4s; }
+        .glass-card:hover { transform: translateY(-15px) scale(1.02); border-color: rgba(255, 255, 255, 0.3); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); }
+        .glass-card-icon { width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; font-size: 3rem; background: linear-gradient(135deg, #2b2a2a); }
+        .glass-card-icon i { color: #8c00ff; }
+        .glass-card h3 { font-size: 1.8rem; margin-bottom: 1rem; color: white; }
+        .glass-card p { color: rgba(255, 255, 255, 0.7); font-size: 1rem; line-height: 1.6; margin-bottom: 1.5rem; }
+        .glass-formats { display: flex; justify-content: center; gap: 0.8rem; flex-wrap: wrap; margin-top: 1.5rem; }
+        .glass-format-tag { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.9); padding: 0.5rem 1.2rem; border-radius: 20px; font-size: 0.9rem; }
+        .glass-recent-conversions { background: var(--glass-bg); backdrop-filter: blur(15px) saturate(180%); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2.5rem; box-shadow: var(--glass-shadow); }
+        .glass-recent-conversions h2 { font-size: 2rem; margin-bottom: 2rem; color: white; }
+        .glass-conversions-list { display: flex; flex-direction: column; gap: 1rem; }
+        .glass-conversion-item { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 1.2rem 1.5rem; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s; }
+        .glass-conversion-item:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); }
+        .glass-conversion-item .file-info h4 { color: white; margin-bottom: 0.3rem; font-size: 1.1rem; }
+        .glass-conversion-item .file-info p { color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; }
+        .glass-nav-link { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); color: white; text-decoration: none; padding: 0.8rem 1.5rem; border-radius: 12px; transition: all 0.3s; display: flex; align-items: center; gap: 8px; font-weight: 500; }
+        .glass-nav-link:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
+        .glass-nav-link.active { background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(75, 0, 130, 0.3)); border-color: rgba(138, 43, 226, 0.5); }
+        .glass-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 3rem 0; }
+        .glass-stat-card { background: var(--glass-bg); backdrop-filter: blur(15px) saturate(180%); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; text-align: center; transition: all 0.3s; }
+        .glass-stat-card:hover { transform: translateY(-5px); border-color: rgba(255, 255, 255, 0.3); }
+        .glass-stat-icon { font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary-color); }
+        .glass-stat-value { font-size: 2.5rem; font-weight: bold; color: white; margin-bottom: 0.5rem; }
+        .glass-stat-label { color: rgba(255, 255, 255, 0.7); font-size: 1rem; }
+        .glass-footer { background: var(--glass-bg); backdrop-filter: blur(20px) saturate(180%); border-top: 1px solid var(--glass-border); margin-top: 4rem; padding: 3rem 0 1rem; }
+        .glass-footer-container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+        .glass-footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
+        .glass-footer-section h4 { color: white; margin-bottom: 1.5rem; font-size: 1.2rem; }
+        .glass-footer-section ul { list-style: none; padding: 0; }
+        .glass-footer-section ul li { margin-bottom: 0.8rem; }
+        .glass-footer-section ul li a { color: rgba(255, 255, 255, 0.7); text-decoration: none; transition: color 0.3s; display: flex; align-items: center; gap: 0.5rem; }
+        .glass-footer-section ul li a:hover { color: white; transform: translateX(5px); }
+        .glass-footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.5); font-size: 0.9rem; }
+        .glass-hero { text-align: center; padding: 4rem 0; margin-bottom: 3rem; }
+        .glass-hero h1 { font-size: 3.5rem; margin-bottom: 1rem; color: white; }
+        .glass-hero p { font-size: 1.2rem; color: rgba(255, 255, 255, 0.8); max-width: 600px; margin: 0 auto 2rem; line-height: 1.6; }
+        .glass-hero-badge { display: inline-block; background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(75, 0, 130, 0.3)); border: 1px solid rgba(138, 43, 226, 0.5); color: white; padding: 0.8rem 1.5rem; border-radius: 50px; font-size: 0.9rem; font-weight: 500; margin: 0 0.5rem; }
+        .hero-badges { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
+        .nav-links { display: flex; gap: 1rem; align-items: center; }
+        .status-success { background: linear-gradient(135deg, rgba(74, 222, 128, 0.2), rgba(34, 197, 94, 0.2)); border: 1px solid rgba(74, 222, 128, 0.3); color: #4ade80; padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; }
+        .social-links { display: flex; gap: 1rem; margin-top: 1rem; }
+        .social-links a { width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; transition: all 0.3s; }
+        .social-links a:hover { background: rgba(255, 255, 255, 0.15); transform: translateY(-2px); }
+        @media (max-width: 768px) { .glass-converter-grid { grid-template-columns: 1fr; } .glass-navbar { padding: 1rem; } .glass-hero h1 { font-size: 2.5rem; } }
+    </style>
+</head>
+<body class="glass-effect" data-theme="dark">
+    <div class="glass-bg-overlay"></div>
+    <nav class="glass-navbar">
+        <div class="nav-container">
+            <a href="index.html" class="glass-logo">
+                <i class="fas fa-exchange-alt"></i>
+                <span>FileConverter</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="glass-nav-link active"><i class="fas fa-home"></i> Home</a>
+                <a href="pages/contact.html" class="glass-nav-link"><i class="fas fa-envelope"></i> Contact Us</a>
+                <a href="pages/account.html" class="glass-nav-link" id="userLink">
+                    <img id="navProfilePic" src="" style="width: 25px; height: 25px; border-radius: 50%; display: none; margin-right: 5px;">
+                    <span id="userText">Account</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="glass-container">
+        <div class="glass-hero">
+            <h1>File Converter</h1>
+            <p>Convert images, videos, audio, and documents effortlessly.</p>
+            <div class="hero-badges">
+                <span class="glass-hero-badge">Secure & Fast</span>
+                <span class="glass-hero-badge">20+ Formats</span>
+                <span class="glass-hero-badge">Free to Use</span>
+            </div>
+        </div>
+
+        <div class="glass-stats">
+            <div class="glass-stat-card">
+                <div class="glass-stat-icon"><i class="fas fa-file-import"></i></div>
+                <div class="glass-stat-value" id="filesConvertedCount">0+</div>
+                <div class="glass-stat-label">Files Converted</div>
+            </div>
+            <div class="glass-stat-card">
+                <div class="glass-stat-icon"><i class="fas fa-users"></i></div>
+                <div class="glass-stat-value" id="loginUsersCount">0+</div>
+                <div class="glass-stat-label">Login Users</div>
+            </div>
+            <div class="glass-stat-card">
+                <div class="glass-stat-icon"><i class="fas fa-bolt"></i></div>
+                <div class="glass-stat-value">99.9%</div>
+                <div class="glass-stat-label">Uptime</div>
+            </div>
+            <div class="glass-stat-card">
+                <div class="glass-stat-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="glass-stat-value">100%</div>
+                <div class="glass-stat-label">Secure</div>
+            </div>
+        </div>
+
+        <div class="glass-converter-grid">
+            <div class="glass-card" onclick="window.location.href='pages/image-converter.html'">
+                <div class="glass-card-icon"><i class="fas fa-image"></i></div>
+                <h3>Image Converter</h3>
+                <p>Convert between PNG, JPG, WebP, BMP, GIF, and SVG formats with high quality preservation</p>
+                <div class="glass-formats"><span class="glass-format-tag">PNG</span><span class="glass-format-tag">JPG</span><span class="glass-format-tag">WEBP</span><span class="glass-format-tag">SVG</span></div>
+            </div>
+            <div class="glass-card" onclick="window.location.href='pages/video-converter.html'">
+                <div class="glass-card-icon"><i class="fas fa-video"></i></div>
+                <h3>Video Converter</h3>
+                <p>Convert MP4, MOV, AVI, MKV, WMV, FLV, and WEBM formats with customizable quality settings</p>
+                <div class="glass-formats"><span class="glass-format-tag">MP4</span><span class="glass-format-tag">MOV</span><span class="glass-format-tag">AVI</span><span class="glass-format-tag">MKV</span></div>
+            </div>
+            <div class="glass-card" onclick="window.location.href='pages/audio-converter.html'">
+                <div class="glass-card-icon"><i class="fas fa-music"></i></div>
+                <h3>Audio Converter</h3>
+                <p>Convert MP3, WAV, AAC, FLAC, OGG, M4A, and AIFF formats with bitrate control</p>
+                <div class="glass-formats"><span class="glass-format-tag">MP3</span><span class="glass-format-tag">WAV</span><span class="glass-format-tag">AAC</span><span class="glass-format-tag">FLAC</span></div>
+            </div>
+            <div class="glass-card" onclick="window.location.href='pages/document-converter.html'">
+                <div class="glass-card-icon"><i class="fas fa-file-alt"></i></div>
+                <h3>Document Converter</h3>
+                <p>Convert PDF, DOCX, TXT, PPT, XLS, HTML, and RTF formats with OCR support</p>
+                <div class="glass-formats"><span class="glass-format-tag">PDF</span><span class="glass-format-tag">DOCX</span><span class="glass-format-tag">TXT</span><span class="glass-format-tag">HTML</span></div>
+            </div>
+            <div class="glass-card" onclick="window.location.href='pages/video-to-audio.html'">
+                <div class="glass-card-icon"><i class="fas fa-headphones-alt"></i></div>
+                <h3>Video to MP3</h3>
+                <p>Extract audio from videos - Convert MP4, AVI, MOV, MKV to MP3, WAV, AAC formats</p>
+                <div class="glass-formats"><span class="glass-format-tag">MP4</span><span class="glass-format-tag">MP3</span><span class="glass-format-tag">WAV</span><span class="glass-format-tag">AAC</span></div>
+            </div>
+        </div>
+
+        <div class="glass-recent-conversions">
+            <h2>Recent Conversions</h2>
+            <div class="glass-conversions-list" id="conversionsList">
+                <div class="glass-conversion-item">
+                    <div class="file-info"><h4><i class="fas fa-image"></i> Loading...</h4><p>Recent conversions will appear here</p></div>
+                    <div class="file-status"><span class="status-success">Loading</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="glass-footer">
+        <div class="glass-footer-container">
+            <div class="glass-footer-grid">
+                <div class="glass-footer-section">
+                    <h4>FileConverter</h4>
+                    <p>Convert files quickly and securely.</p>
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/vikram-mahajan-1a2b55378/"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/mahajanvikram19"><i class="fab fa-github"></i></a>
+                        <a href="https://www.instagram.com/vikram_mahajan19/"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="glass-footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="pages/image-converter.html"><i class="fas fa-arrow-right"></i> Image Converter</a></li>
+                        <li><a href="pages/video-converter.html"><i class="fas fa-arrow-right"></i> Video Converter</a></li>
+                        <li><a href="pages/audio-converter.html"><i class="fas fa-arrow-right"></i> Audio Converter</a></li>
+                        <li><a href="pages/document-converter.html"><i class="fas fa-arrow-right"></i> Document Converter</a></li>
+                    </ul>
+                </div>
+                <div class="glass-footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="pages/contact.html"><i class="fas fa-question-circle"></i> Help Center</a></li>
+                        <li><a href="#"><i class="fas fa-book"></i> Documentation</a></li>
+                        <li><a href="#"><i class="fas fa-code"></i> API</a></li>
+                        <li><a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="glass-footer-section">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="pages/contact.html"><i class="fas fa-envelope"></i> Email Support</a></li>
+                        <li><a href="#"><i class="fas fa-phone"></i> +91 738-746-9487</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="glass-footer-bottom">
+                <p>&copy; 2026 FileConverter. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRecentConversions();
+            loadStats();
+            checkUserLogin();
+        });
+
+        function checkUserLogin() {
+            const token = localStorage.getItem('token');
+            const userText = document.getElementById('userText');
+            const navProfilePic = document.getElementById('navProfilePic');
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    userText.textContent = payload.email ? payload.email.split('@')[0] : 'Account';
+                    
+                    // Load profile picture
+                    const userData = JSON.parse(localStorage.getItem('user') || '{}');
+                    if (userData && userData.profile_picture) {
+                        navProfilePic.src = 'http://localhost:4000/api/files/profiles/' + userData.profile_picture;
+                        navProfilePic.style.display = 'block';
+                    }
+                } catch(e) {
+                    userText.textContent = 'Account';
+                }
+            } else {
+                userText.textContent = 'Login';
+                navProfilePic.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

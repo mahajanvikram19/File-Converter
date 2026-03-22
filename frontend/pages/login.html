@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - File Converter</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/themes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: linear-gradient(135deg, #000000 0%, #121212 50%, #1a1a1a 100%); min-height: 100vh; margin: 0; display: flex; align-items: center; justify-content: center; }
+        .login-container { background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 3rem; width: 100%; max-width: 400px; position: relative; }
+        .login-container h1 { color: white; text-align: center; margin-bottom: 2rem; }
+        .login-container h1 i { color: #8c00ff; margin-right: 10px; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; color: white; margin-bottom: 0.5rem; }
+        .form-group input { width: 100%; padding: 1rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: white; font-size: 1rem; box-sizing: border-box; }
+        .form-group input:focus { outline: none; border-color: #8c00ff; }
+        .login-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, #8c00ff, #4b0082); color: white; border: none; border-radius: 10px; font-size: 1.1rem; cursor: pointer; transition: all 0.3s; }
+        .login-btn:hover { transform: scale(1.02); box-shadow: 0 10px 25px rgba(140, 0, 255, 0.4); }
+        .register-link { text-align: center; margin-top: 1.5rem; color: rgba(255,255,255,0.7); }
+        .register-link a { color: #8c00ff; text-decoration: none; }
+        .register-link a:hover { text-decoration: underline; }
+        .forgot-link { text-align: center; margin-top: 0.5rem; }
+        .forgot-link a { color: #8c00ff; text-decoration: none; font-size: 0.9rem; }
+        .forgot-link a:hover { text-decoration: underline; }
+        .error-msg { color: #ff4444; text-align: center; margin-bottom: 1rem; display: none; padding: 0.8rem; border-radius: 8px; background: rgba(255,68,68,0.2); }
+        .success-msg { color: #4ade80; text-align: center; margin-bottom: 1rem; display: none; padding: 0.8rem; border-radius: 8px; background: rgba(74,222,128,0.2); }
+        .back-home { text-align: center; margin-top: 1rem; }
+        .back-home a { color: rgba(255,255,255,0.7); text-decoration: none; }
+        .back-home a:hover { color: white; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 2rem; width: 90%; max-width: 400px; }
+        .modal-content h2 { color: white; text-align: center; margin-bottom: 1rem; }
+        .modal-content h2 i { color: #8c00ff; margin-right: 10px; }
+        .modal-content p { color: rgba(255,255,255,0.7); text-align: center; margin-bottom: 1.5rem; font-size: 0.9rem; }
+        .modal-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, #8c00ff, #4b0082); color: white; border: none; border-radius: 10px; font-size: 1rem; cursor: pointer; transition: all 0.3s; margin-top: 1rem; }
+        .modal-btn:hover { transform: scale(1.02); }
+        .modal-cancel { background: rgba(255,255,255,0.1) !important; margin-top: 0.5rem !important; }
+        .modal-cancel:hover { background: rgba(255,255,255,0.2) !important; }
+        .reset-link-btn { display: inline-block; margin-top: 10px; padding: 8px 16px; background: rgba(140, 0, 255, 0.3); border: 1px solid #8c00ff; border-radius: 8px; color: #8c00ff; cursor: pointer; text-decoration: none; }
+        .reset-link-btn:hover { background: rgba(140, 0, 255, 0.5); }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1><i class="fas fa-sign-in-alt"></i> Login</h1>
+        <div class="error-msg" id="errorMsg"></div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="loginEmail" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</button>
+        </form>
+        <p class="register-link">Don't have an account? <a href="register.html">Sign Up</a></p>
+        <p class="forgot-link"><a href="#" onclick="showForgotPasswordModal(); return false;">Forgot Password?</a></p>
+        <p class="back-home"><a href="../index.html"><i class="fas fa-home"></i> Back to Home</a></p>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal-overlay" id="forgotPasswordModal">
+        <div class="modal-content">
+            <h2><i class="fas fa-key"></i> Forgot Password</h2>
+            <p>Enter your email and date of birth to reset your password.</p>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="forgotEmail" placeholder="Enter your registered email">
+            </div>
+            <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="date" id="forgotDOB" placeholder="Enter your date of birth">
+            </div>
+            <div class="success-msg" id="forgotSuccessMsg" style="display: none;"></div>
+            <div class="error-msg" id="forgotErrorMsg" style="display: none;"></div>
+            
+            <!-- Password reset fields (hidden initially) -->
+            <div id="resetFields" style="display: none;">
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" id="newPassword" placeholder="Enter new password">
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm new password">
+                </div>
+            </div>
+            
+            <button class="modal-btn" id="forgotSubmitBtn" onclick="verifyAndResetPassword()">
+                <i class="fas fa-check"></i> Verify & Reset Password
+            </button>
+            <button class="modal-btn modal-cancel" onclick="closeForgotPasswordModal()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:4000/api';
+        const form = document.getElementById('loginForm');
+        const errorMsg = document.getElementById('errorMsg');
+        let currentResetToken = null;
+        
+        // Check for reset token in URL on page load
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('reset_token');
+            if (token) {
+                currentResetToken = token;
+                showResetPasswordModal();
+            }
+        };
+
+        document.getElementById('loginEmail').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); form.dispatchEvent(new Event('submit')); }
+        });
+        
+        document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); form.dispatchEvent(new Event('submit')); }
+        });
+        
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            errorMsg.style.display = 'none';
+            
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                errorMsg.textContent = 'Please fill all fields';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            try {
+                const res = await fetch(API_URL + '/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, password: password })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    window.location.href = '../index.html';
+                } else {
+                    errorMsg.textContent = data.message || 'Login failed';
+                    errorMsg.style.display = 'block';
+                }
+            } catch (err) {
+                errorMsg.textContent = 'Error connecting to server. Make sure backend is running on port 4000';
+                errorMsg.style.display = 'block';
+            }
+        });
+
+        function showForgotPasswordModal() {
+            document.getElementById('forgotPasswordModal').classList.add('active');
+            document.getElementById('forgotEmail').value = '';
+            document.getElementById('forgotDOB').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            document.getElementById('forgotSuccessMsg').style.display = 'none';
+            document.getElementById('forgotErrorMsg').style.display = 'none';
+            document.getElementById('resetFields').style.display = 'none';
+            document.getElementById('forgotSubmitBtn').innerHTML = '<i class="fas fa-check"></i> Verify & Reset Password';
+        }
+
+        function closeForgotPasswordModal() {
+            document.getElementById('forgotPasswordModal').classList.remove('active');
+        }
+
+        async function verifyAndResetPassword() {
+            const email = document.getElementById('forgotEmail').value.trim();
+            const dob = document.getElementById('forgotDOB').value.trim();
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorMsgEl = document.getElementById('forgotErrorMsg');
+            const successMsgEl = document.getElementById('forgotSuccessMsg');
+            const resetFields = document.getElementById('resetFields');
+            
+            // First, validate email and DOB
+            if (!email || !dob) {
+                errorMsgEl.textContent = 'Please enter your email and date of birth';
+                errorMsgEl.style.display = 'block';
+                successMsgEl.style.display = 'none';
+                return;
+            }
+            
+            // If reset fields are not shown, show them now
+            if (resetFields.style.display === 'none') {
+                resetFields.style.display = 'block';
+                errorMsgEl.style.display = 'none';
+                return;
+            }
+            
+            // Now validate passwords
+            if (!newPassword || !confirmPassword) {
+                errorMsgEl.textContent = 'Please enter new password and confirm password';
+                errorMsgEl.style.display = 'block';
+                successMsgEl.style.display = 'none';
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                errorMsgEl.textContent = 'Passwords do not match';
+                errorMsgEl.style.display = 'block';
+                successMsgEl.style.display = 'none';
+                return;
+            }
+
+            if (newPassword.length < 4) {
+                errorMsgEl.textContent = 'Password must be at least 4 characters';
+                errorMsgEl.style.display = 'block';
+                successMsgEl.style.display = 'none';
+                return;
+            }
+
+            try {
+                const res = await fetch(API_URL + '/auth/forgot-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        email: email, 
+                        date_of_birth: dob,
+                        new_password: newPassword
+                    })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    errorMsgEl.style.display = 'none';
+                    successMsgEl.textContent = data.message;
+                    successMsgEl.style.display = 'block';
+                    setTimeout(function() {
+                        closeForgotPasswordModal();
+                        alert('Password reset successful! Please login with your new password.');
+                    }, 2000);
+                } else {
+                    errorMsgEl.textContent = data.message || 'Failed to reset password';
+                    errorMsgEl.style.display = 'block';
+                    successMsgEl.style.display = 'none';
+                }
+            } catch (err) {
+                errorMsgEl.textContent = 'Error connecting to server';
+                errorMsgEl.style.display = 'block';
+                successMsgEl.style.display = 'none';
+            }
+        }
+
+        document.getElementById('forgotPasswordModal').addEventListener('click', function(e) {
+            if (e.target === this) closeForgotPasswordModal();
+        });
+        
+        document.getElementById('resetPasswordModal').addEventListener('click', function(e) {
+            if (e.target === this) closeResetPasswordModal();
+        });
+    </script>
+</body>
+</html>

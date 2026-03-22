@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - File Converter</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/themes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #000000 0%, #121212 50%, #1a1a1a 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .admin-header h1 {
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .admin-header h1 i {
+            color: var(--primary-color);
+        }
+        
+        .back-btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-card i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+        
+        .stat-card .label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+        }
+        
+        /* Tabs */
+        .admin-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .admin-tab {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .admin-tab:hover, .admin-tab.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        /* Tables */
+        .admin-table-container {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .admin-table th {
+            background: rgba(138, 43, 226, 0.3);
+            padding: 1rem;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        .admin-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .admin-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .status-success {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+        }
+        
+        .user-email {
+            color: #4cc9f0;
+        }
+        
+        .conversion-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        
+        .conversion-info .filename {
+            font-weight: bold;
+        }
+        
+        .conversion-info .converted {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        /* Refresh button */
+        .refresh-btn {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 1rem;
+        }
+        
+        .refresh-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header -->
+        <div class="admin-header">
+            <h1>
+                <i class="fas fa-shield-alt"></i>
+                Admin Dashboard
+                <button class="refresh-btn" onclick="loadAllData()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </h1>
+            <a href="../index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <div class="value" id="totalUsers">-</div>
+                <div class="label">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-file-import"></i>
+                <div class="value" id="totalConversions">-</div>
+                <div class="label">Total Conversions</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-calendar-day"></i>
+                <div class="value" id="todayConversions">-</div>
+                <div class="label">Today's Conversions</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-database"></i>
+                <div class="value" id="storageUsed">-</div>
+                <div class="label">Storage Used (MB)</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" data-tab="users">
+                <i class="fas fa-users"></i> Users
+            </button>
+            <button class="admin-tab" data-tab="conversions">
+                <i class="fas fa-exchange-alt"></i> All Conversions
+            </button>
+            <button class="admin-tab" data-tab="messages">
+                <i class="fas fa-envelope"></i> Contact Messages
+            </button>
+        </div>
+
+        <!-- Users Tab -->
+        <div class="tab-content active" id="usersTab">
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Joined Date</th>
+                            <th>Total Conversions</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr>
+                            <td colspan="5" class="loading">Loading users...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Conversions Tab -->
+        <div class="tab-content" id="conversionsTab">
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>File Name</th>
+                            <th>User</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="conversionsTableBody">
+                        <tr>
+                            <td colspan="4" class="loading">Loading conversions...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Messages Tab -->
+        <div class="tab-content" id="messagesTab">
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Subject</th>
+                            <th>Message</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="messagesTableBody">
+                        <tr>
+                            <td colspan="8" class="loading">Loading messages...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Reply Modal -->
+        <div id="replyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center;">
+            <div style="background:var(--card-bg); padding:2rem; border-radius:15px; max-width:500px; width:90%;">
+                <h2 style="margin-bottom:1rem;"><i class="fas fa-reply"></i> Reply to User</h2>
+                <p id="replyToEmail" style="color:var(--primary-color); margin-bottom:1rem;"></p>
+                <div class="form-group">
+                    <label>Your Reply</label>
+                    <textarea id="replyMessage" rows="5" placeholder="Type your reply..." style="width:100%; padding:0.8rem; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); border-radius:5px; color:white; font-size:1rem; box-sizing:border-box; resize:vertical;"></textarea>
+                </div>
+                <div style="display:flex; gap:1rem; justify-content:flex-end;">
+                    <button class="auth-btn" onclick="closeReplyModal()" style="background:rgba(255,255,255,0.1);">Cancel</button>
+                    <button class="auth-btn" id="sendReplyBtn">Send Reply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:4000/api';
+
+        // Tab switching
+        document.querySelectorAll('.admin-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                this.classList.add('active');
+                document.getElementById(this.dataset.tab + 'Tab').classList.add('active');
+            });
+        });
+
+        // Load all data
+        async function loadAllData() {
+            await loadStats();
+            await loadUsers();
+            await loadConversions();
+            await loadContactMessages();
+        }
+
+        // Load stats
+        async function loadStats() {
+            try {
+                const res = await fetch(`${API_URL}/admin/stats`);
+                const data = await res.json();
+                
+                if (data.success) {
+                    document.getElementById('totalUsers').textContent = data.stats.total_users;
+                    document.getElementById('totalConversions').textContent = data.stats.total_conversions;
+                    document.getElementById('todayConversions').textContent = data.stats.today_conversions;
+                    document.getElementById('storageUsed').textContent = data.stats.storage_used_mb + ' MB';
+                }
+            } catch (err) {
+                console.error('Error loading stats:', err);
+            }
+        }
+
+        // Load users
+        async function loadUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            
+            try {
+                const res = await fetch(`${API_URL}/admin/users`);
+                const data = await res.json();
+                
+                if (data.success && data.users && data.users.length > 0) {
+                    tbody.innerHTML = data.users.map(user => `
+                        <tr>
+                            <td>${user.id}</td>
+                            <td class="user-email">${user.email}</td>
+                            <td>${formatDate(user.created_at)}</td>
+                            <td><span class="status-badge status-success">${user.conversions}</span></td>
+                            <td>
+                                <button class="refresh-btn" onclick="viewUser(${user.id})">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                <i class="fas fa-users"></i>
+                                <p>No users registered yet</p>
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (err) {
+                console.error('Error loading users:', err);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Error loading users. Make sure backend is running on port 4000</p>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Load conversions
+        async function loadConversions() {
+            const tbody = document.getElementById('conversionsTableBody');
+            
+            try {
+                const res = await fetch(`${API_URL}/admin/conversions`);
+                const data = await res.json();
+                
+                if (data.success && data.conversions && data.conversions.length > 0) {
+                    tbody.innerHTML = data.conversions.map(conv => `
+                        <tr>
+                            <td>${conv.id}</td>
+                            <td class="conversion-info">
+                                <span class="filename">${conv.filename}</span>
+                                <span class="converted">→ ${conv.converted_filename}</span>
+                            </td>
+                            <td class="user-email">${conv.user_email}</td>
+                            <td>${formatDate(conv.date)}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="empty-state">
+                                <i class="fas fa-file-import"></i>
+                                <p>No conversions yet</p>
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (err) {
+                console.error('Error loading conversions:', err);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Error loading conversions. Make sure backend is running on port 4000</p>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Load contact messages
+        async function loadContactMessages() {
+            const tbody = document.getElementById('messagesTableBody');
+            
+            try {
+                const res = await fetch(`${API_URL}/admin/contact-messages`);
+                const data = await res.json();
+                
+                console.log('Contact messages response:', data);
+                
+                if (data.success && data.messages && data.messages.length > 0) {
+                    tbody.innerHTML = data.messages.map(msg => `
+                        <tr>
+                            <td>${msg.id}</td>
+                            <td>${msg.name}</td>
+                            <td class="user-email">${msg.email}</td>
+                            <td>${msg.phone || '-'}</td>
+                            <td>${msg.subject}</td>
+                            <td>${msg.message}</td>
+                            <td>${formatDate(msg.created_at)}</td>
+                            <td>
+                                <button class="refresh-btn" onclick="openReplyModal(${msg.id}, '${msg.email}', '${msg.name}')">
+                                    <i class="fas fa-reply"></i> Reply
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="empty-state">
+                                <i class="fas fa-envelope"></i>
+                                <p>No contact messages yet</p>
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (err) {
+                console.error('Error loading messages:', err);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Error loading messages. Make sure backend is running on port 4000</p>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        let currentReplyMessageId = null;
+
+        function openReplyModal(messageId, email, name) {
+            currentReplyMessageId = messageId;
+            document.getElementById('replyToEmail').textContent = `Replying to: ${name} (${email})`;
+            document.getElementById('replyMessage').value = '';
+            document.getElementById('replyModal').style.display = 'flex';
+            
+            document.getElementById('sendReplyBtn').onclick = function() {
+                sendReply();
+            };
+        }
+
+        function closeReplyModal() {
+            document.getElementById('replyModal').style.display = 'none';
+            currentReplyMessageId = null;
+        }
+
+        async function sendReply() {
+            const reply = document.getElementById('replyMessage').value.trim();
+            
+            if (!reply) {
+                alert('Please enter a reply message');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_URL}/admin/reply-user`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message_id: currentReplyMessageId,
+                        reply: reply
+                    })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    alert('Reply sent successfully!');
+                    closeReplyModal();
+                    loadContactMessages();
+                } else {
+                    alert(data.message || 'Failed to send reply');
+                }
+            } catch (err) {
+                alert('Error sending reply. Make sure backend is running on port 4000');
+                console.error(err);
+            }
+        }
+
+        // View user details
+        async function viewUser(userId) {
+            try {
+                const res = await fetch(`${API_URL}/admin/user/${userId}`);
+                const data = await res.json();
+                
+                if (data.success) {
+                    alert(`User: ${data.user.email}\nTotal Conversions: ${data.conversions.length}`);
+                }
+            } catch (err) {
+                alert('Error loading user details');
+            }
+        }
+
+        // Format date
+        function formatDate(dateStr) {
+            if (!dateStr) return 'N/A';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+
+        // Initialize
+        loadAllData();
+    </script>
+</body>
+</html>

@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video to Audio Converter - File Converter</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/themes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --glass-bg: rgba(255, 255, 255, 0.1); --glass-border: rgba(255, 255, 255, 0.2); --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); --primary-color: #8a2be2; }
+        body.glass-effect { background: linear-gradient(135deg, #000000 0%, #121212 25%, #1a1a1a 50%, #121212 75%, #000000 100%); min-height: 100vh; position: relative; overflow-x: hidden; }
+        .glass-bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 50%, rgba(138, 43, 226, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(147, 112, 219, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 80%, rgba(75, 0, 130, 0.1) 0%, transparent 50%); z-index: -1; }
+        .glass-navbar { background: var(--glass-bg); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-bottom: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); position: sticky; top: 0; z-index: 1000; padding: 1rem 2rem; }
+        .glass-navbar .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
+        .glass-logo { display: flex; align-items: center; gap: 12px; font-size: 1.8rem; font-weight: bold; color: white; text-decoration: none; }
+        .glass-logo i { font-size: 2.2rem; background: linear-gradient(135deg, var(--primary-color), #9370db); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: flex; gap: 1rem; align-items: center; }
+        .glass-nav-link { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); color: white; text-decoration: none; padding: 0.8rem 1.5rem; border-radius: 12px; transition: all 0.3s; display: flex; align-items: center; gap: 8px; font-weight: 500; }
+        .glass-nav-link:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
+        .glass-nav-link.active { background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(75, 0, 130, 0.3)); border-color: rgba(138, 43, 226, 0.5); }
+        
+        /* Navigation Dropdown Styles */
+        .nav-dropdown { position: relative; }
+        .nav-dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 0.5rem; min-width: 200px; z-index: 1000; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); margin-top: 0.5rem; }
+        .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+        .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 0.8rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; border-radius: 8px; transition: all 0.3s; }
+        .dropdown-item:hover { background: rgba(138, 43, 226, 0.2); color: white; }
+        .dropdown-item.active { background: rgba(138, 43, 226, 0.3); color: white; }
+        .dropdown-item i { width: 20px; text-align: center; }
+        .dropdown-toggle::after { content: ''; }
+        
+        .glass-container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; position: relative; z-index: 1; }
+        
+        .video-audio-container { background: var(--glass-bg); backdrop-filter: blur(15px) saturate(180%); border: 1px solid var(--glass-border); border-radius: 20px; padding: 3rem; margin-top: 2rem; }
+        
+        .page-header { text-align: center; margin-bottom: 2rem; }
+        .page-header h1 { font-size: 2.5rem; color: white; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 1rem; }
+        .page-header p { color: rgba(255, 255, 255, 0.7); }
+        
+        .upload-area { border: 3px dashed var(--primary-color); border-radius: 15px; padding: 3rem; text-align: center; margin-bottom: 2rem; cursor: pointer; transition: all 0.3s; background: rgba(138, 43, 226, 0.05); }
+        .upload-area:hover { background: rgba(138, 43, 226, 0.1); transform: translateY(-5px); }
+        .upload-area i { font-size: 4rem; color: var(--primary-color); margin-bottom: 1rem; }
+        
+        .preview-section { display: none; margin: 2rem 0; }
+        .preview-section.active { display: block; animation: fadeIn 0.5s ease; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .video-preview-container { background: rgba(0, 0, 0, 0.3); border-radius: 15px; padding: 2rem; display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
+        .video-thumbnail { width: 200px; height: 200px; border-radius: 10px; overflow: hidden; background: rgba(255, 255, 255, 0.05); display: flex; align-items: center; justify-content: center; position: relative; }
+        .video-thumbnail i { font-size: 4rem; color: var(--primary-color); }
+        
+        .video-info { flex: 1; }
+        .video-info h4 { color: white; margin-bottom: 0.5rem; font-size: 1.2rem; }
+        .video-info p { color: rgba(255, 255, 255, 0.7); margin-bottom: 0.5rem; }
+        
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+        .info-card { background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 10px; text-align: center; }
+        .info-card i { font-size: 1.5rem; color: var(--primary-color); margin-bottom: 0.5rem; }
+        .info-card h5 { color: white; font-size: 0.9rem; }
+        .info-card p { color: rgba(255, 255, 255, 0.6); font-size: 0.8rem; }
+        
+        .format-section { margin: 2rem 0; }
+        .format-section h3 { color: var(--primary-color); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .format-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; }
+        .format-option { background: rgba(255, 255, 255, 0.05); padding: 1.5rem; border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; }
+        .format-option:hover { transform: translateY(-5px); border-color: var(--primary-color); }
+        .format-option.selected { background: var(--primary-color); color: white; }
+        .format-option.selected i { color: white; }
+        .format-option i { font-size: 2rem; color: var(--primary-color); margin-bottom: 0.5rem; }
+        
+        .quality-section { background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 2rem; margin: 2rem 0; }
+        .quality-section h3 { color: var(--primary-color); margin-bottom: 1.5rem; }
+        
+        .slider-container { margin: 1.5rem 0; }
+        .slider-labels { display: flex; justify-content: space-between; margin-top: 0.5rem; color: #aaa; font-size: 0.9rem; }
+        .slider-value { color: var(--primary-color); font-weight: bold; font-size: 1.1rem; }
+        
+        .convert-btn { background: linear-gradient(135deg, var(--primary-color), #4b0082); color: white; border: none; padding: 1.2rem 3rem; font-size: 1.2rem; border-radius: 15px; cursor: pointer; display: block; margin: 2rem auto; transition: all 0.3s; display: flex; align-items: center; gap: 1rem; justify-content: center; }
+        .convert-btn:hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 10px 25px rgba(138, 43, 226, 0.4); }
+        .convert-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .progress-section { display: none; text-align: center; margin: 2rem 0; padding: 2rem; background: rgba(255, 255, 255, 0.05); border-radius: 15px; }
+        .progress-section.active { display: block; }
+        .progress-section h3 { color: var(--primary-color); margin-bottom: 1rem; }
+        
+        .download-section { display: none; text-align: center; padding: 3rem; background: rgba(138, 43, 226, 0.1); border-radius: 15px; margin: 2rem 0; animation: fadeIn 0.5s ease; }
+        .download-section.active { display: block; }
+        
+        .download-options { display: flex; justify-content: center; gap: 1.5rem; margin: 2rem 0; flex-wrap: wrap; }
+        .download-btn { padding: 1rem 2rem; border-radius: 10px; text-decoration: none; display: flex; align-items: center; gap: 0.8rem; transition: all 0.3s; min-width: 200px; justify-content: center; cursor: pointer; border: none; font-size: 1rem; }
+        .download-btn-primary { background: var(--primary-color); color: white; }
+        .download-btn-secondary { background: transparent; border: 2px solid var(--primary-color); color: var(--primary-color); }
+        .download-btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3); }
+        
+        .error-msg { background: rgba(255, 68, 68, 0.2); border: 1px solid #ff4444; color: #ff4444; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; text-align: center; display: none; }
+        
+        .audio-preview-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; }
+        .audio-preview-modal.active { display: flex; }
+        .audio-preview-content { background: var(--glass-bg); padding: 2rem; border-radius: 20px; text-align: center; max-width: 500px; }
+        .audio-preview-content h3 { color: white; margin-bottom: 1rem; }
+        .audio-waveform { height: 80px; background: rgba(138, 43, 226, 0.2); border-radius: 10px; margin: 1rem 0; display: flex; align-items: center; justify-content: center; gap: 3px; }
+        .audio-waveform span { width: 4px; background: var(--primary-color); border-radius: 2px; animation: wave 1s ease-in-out infinite; }
+        @keyframes wave { 0%, 100% { height: 20px; } 50% { height: 60px; } }
+        
+        @media (max-width: 768px) {
+            .video-audio-container { padding: 1.5rem; }
+            .upload-area { padding: 2rem 1rem; }
+            .format-options { grid-template-columns: repeat(2, 1fr); }
+            .video-preview-container { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body class="glass-effect" data-theme="dark">
+    <div class="glass-bg-overlay"></div>
+    
+    <!-- Glass Navbar -->
+    <nav class="glass-navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="glass-logo">
+                <i class="fas fa-exchange-alt"></i>
+                <span>FileConverter</span>
+            </a>
+<div class="nav-links">
+                <a href="../index.html" class="glass-nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="contact.html" class="glass-nav-link"><i class="fas fa-envelope"></i> Contact Us</a>
+<a href="account.html" class="glass-nav-link" id="userLink"><img id="navProfilePic" src="" style="width: 25px; height: 25px; border-radius: 50%; display: none; margin-right: 5px;"><i class="fas fa-user-circle"></i> <span id="userText">Account</span></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="glass-container">
+        <div class="video-audio-container">
+            <div class="error-msg" id="errorMsg"></div>
+            
+            <div class="page-header">
+                <h1><i class="fas fa-headphones-alt"></i> Video to Audio Converter</h1>
+                <p>Extract high-quality audio from your videos - MP4, AVI, MOV, MKV to MP3, WAV, AAC</p>
+            </div>
+
+            <!-- Upload Area -->
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Drag & Drop your video here</h3>
+                <p>or click to browse files</p>
+                <p class="file-info">Supports: MP4, AVI, MOV, MKV, WMV, FLV, WEBM</p>
+                <p class="file-info">Max file size: 500MB</p>
+                <input type="file" id="fileInput" accept="video/*,.mp4,.mov,.avi,.mkv,.wmv,.flv,.webm" hidden>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="preview-section" id="previewSection">
+                <h3><i class="fas fa-video"></i> Video Preview</h3>
+                <div class="video-preview-container">
+                    <div class="video-thumbnail">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <div class="video-info">
+                        <h4 id="fileName">video.mp4</h4>
+                        <p>Ready for audio extraction</p>
+                    </div>
+                </div>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <i class="fas fa-film"></i>
+                        <h5 id="fileNameInfo">video.mp4</h5>
+                        <p>File Name</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-weight-hanging"></i>
+                        <h5 id="fileSize">0 MB</h5>
+                        <p>File Size</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-clock"></i>
+                        <h5 id="fileDuration">0:00</h5>
+                        <p>Duration</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Format Selection -->
+            <div class="format-section" id="formatSection">
+                <h3><i class="fas fa-music"></i> Output Audio Format</h3>
+                <div class="format-options">
+                    <div class="format-option selected" data-format="mp3">
+                        <i class="fas fa-music"></i>
+                        <h4>MP3</h4>
+                        <p>Universal</p>
+                    </div>
+                    <div class="format-option" data-format="wav">
+                        <i class="fas fa-wave-square"></i>
+                        <h4>WAV</h4>
+                        <p>Lossless</p>
+                    </div>
+                    <div class="format-option" data-format="aac">
+                        <i class="fas fa-file-audio"></i>
+                        <h4>AAC</h4>
+                        <p>High Quality</p>
+                    </div>
+                    <div class="format-option" data-format="ogg">
+                        <i class="fas fa-volume-up"></i>
+                        <h4>OGG</h4>
+                        <p>Open Source</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quality Settings -->
+            <div class="quality-section" id="qualitySection">
+                <h3><i class="fas fa-sliders-h"></i> Audio Quality</h3>
+                <div class="slider-container">
+                    <label>Bitrate: <span class="slider-value" id="bitrateValue">192 kbps</span></label>
+                    <input type="range" id="bitrateSlider" min="64" max="320" value="192" step="32" style="width: 100%; margin-top: 10px;">
+                    <div class="slider-labels">
+                        <span>Low (64k)</span>
+                        <span>High (320k)</span>
+                    </div>
+                </div>
+                
+                <div class="slider-container">
+                    <label>Sample Rate: <span class="slider-value" id="sampleRateValue">44100 Hz</span></label>
+                    <input type="range" id="sampleRateSlider" min="22050" max="48000" value="44100" step="4410" style="width: 100%; margin-top: 10px;">
+                    <div class="slider-labels">
+                        <span>22050 Hz</span>
+                        <span>48000 Hz</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Convert Button -->
+            <button class="convert-btn" id="convertBtn" disabled>
+                <i class="fas fa-cut"></i> Extract Audio
+            </button>
+
+            <!-- Progress Section -->
+            <div class="progress-section" id="progressSection">
+                <h3><i class="fas fa-sync fa-spin"></i> Extracting Audio...</h3>
+                <p id="progressStatus">Please wait while we extract audio from your video...</p>
+            </div>
+
+            <!-- Download Section -->
+            <div class="download-section" id="downloadSection">
+                <h3><i class="fas fa-check-circle" style="color: #4ade80;"></i> Extraction Complete!</h3>
+                <p>Your audio has been extracted successfully</p>
+                
+                <div class="download-options">
+                    <button class="download-btn download-btn-primary" id="downloadBtn">
+                        <i class="fas fa-download"></i> Download Audio
+                    </button>
+                    <button class="download-btn download-btn-secondary" id="previewBtn">
+                        <i class="fas fa-play"></i> Preview
+                    </button>
+                    <button class="download-btn download-btn-secondary" onclick="convertAnother()">
+                        <i class="fas fa-redo"></i> Convert Another
+                    </button>
+                </div>
+            </div>
+
+            <!-- Audio Preview Modal -->
+            <div class="audio-preview-modal" id="audioPreviewModal">
+                <div class="audio-preview-content">
+                    <h3><i class="fas fa-music"></i> Audio Preview</h3>
+                    <audio id="audioPlayer" controls style="width: 100%; margin: 1rem 0;">
+                        Your browser does not support audio.
+                    </audio>
+                    <div class="audio-waveform">
+                        <span style="animation-delay: 0s;"></span>
+                        <span style="animation-delay: 0.1s;"></span>
+                        <span style="animation-delay: 0.2s;"></span>
+                        <span style="animation-delay: 0.3s;"></span>
+                        <span style="animation-delay: 0.4s;"></span>
+                        <span style="animation-delay: 0.5s;"></span>
+                        <span style="animation-delay: 0.6s;"></span>
+                        <span style="animation-delay: 0.7s;"></span>
+                    </div>
+                    <p id="audioFileName" style="color: rgba(255,255,255,0.7);">audio.mp3</p>
+                    <button class="download-btn download-btn-secondary" onclick="closeAudioPreview()" style="margin: 1rem auto 0;">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script>
+        const API_URL = 'http://localhost:4000/api';
+        let selectedVideoFile = null;
+        let selectedFormat = 'mp3';
+        let conversionActive = false;
+        let convertedFileUrl = null;
+        let convertedFilename = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeConverter();
+            setupEventListeners();
+            checkUserLogin();
+        });
+
+        function checkUserLogin() {
+            const token = localStorage.getItem('token');
+            const userText = document.getElementById('userText');
+            const navProfilePic = document.getElementById('navProfilePic');
+            const userIcon = document.querySelector('#userLink .fa-user-circle');
+            
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    userText.textContent = payload.email ? payload.email.split('@')[0] : 'Account';
+                    
+                    // Load profile picture
+                    const userData = JSON.parse(localStorage.getItem('user') || '{}');
+                    if (userData && userData.profile_picture) {
+                        navProfilePic.src = 'http://localhost:4000/api/files/profiles/' + userData.profile_picture;
+                        navProfilePic.style.display = 'block';
+                        if (userIcon) userIcon.style.display = 'none';
+                    }
+                } catch(e) {
+                    userText.textContent = 'Account';
+                }
+            } else {
+                userText.textContent = 'Login';
+                navProfilePic.style.display = 'none';
+                if (userIcon) userIcon.style.display = 'inline-block';
+            }
+        }
+
+        function showError(msg) {
+            const el = document.getElementById('errorMsg');
+            el.textContent = msg;
+            el.style.display = 'block';
+            setTimeout(() => el.style.display = 'none', 5000);
+        }
+
+        function initializeConverter() {
+            initializeDragAndDrop();
+            selectFormat('mp3');
+            updateSliderValues();
+        }
+
+        function setupEventListeners() {
+            // Format selection
+            document.querySelectorAll('.format-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    selectFormat(this.dataset.format);
+                });
+            });
+            
+            // Sliders
+            document.getElementById('bitrateSlider').addEventListener('input', updateSliderValues);
+            document.getElementById('sampleRateSlider').addEventListener('input', updateSliderValues);
+            
+            // Convert button
+            document.getElementById('convertBtn').addEventListener('click', startExtraction);
+            
+            // Download button
+            document.getElementById('downloadBtn').addEventListener('click', downloadAudio);
+            
+            // Preview button
+            document.getElementById('previewBtn').addEventListener('click', previewAudio);
+        }
+
+        function initializeDragAndDrop() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            if (!uploadArea || !fileInput) return;
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); }, false);
+            });
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, () => uploadArea.style.backgroundColor = 'rgba(138, 43, 226, 0.2)', false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, () => uploadArea.style.backgroundColor = '', false);
+            });
+            
+            uploadArea.addEventListener('drop', e => handleFiles(e.dataTransfer.files), false);
+            uploadArea.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', e => handleFiles(e.target.files));
+        }
+
+        function handleFiles(files) {
+            if (files.length === 0) return;
+            const file = files[0];
+            
+            // Check if it's a video file
+            if (!file.type.startsWith('video/')) {
+                showError('Please upload a video file!');
+                return;
+            }
+            
+            selectedVideoFile = file;
+            
+            // Show preview
+            document.getElementById('previewSection').classList.add('active');
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileNameInfo').textContent = file.name;
+            document.getElementById('fileSize').textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+            
+            // Get video duration
+            const video = document.createElement('video');
+            video.preload = 'metadata';
+            video.onloadedmetadata = function() {
+                window.URL.revokeObjectURL(video.src);
+                const duration = video.duration;
+                const minutes = Math.floor(duration / 60);
+                const seconds = Math.floor(duration % 60);
+                document.getElementById('fileDuration').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            };
+            video.src = window.URL.createObjectURL(file);
+            
+            // Update upload area
+            document.getElementById('uploadArea').innerHTML = `
+                <i class="fas fa-check-circle" style="color: #4ade80;"></i>
+                <h3>${file.name}</h3>
+                <p>Ready for audio extraction</p>
+            `;
+            
+            // Enable convert button
+            document.getElementById('convertBtn').disabled = false;
+        }
+
+        function selectFormat(format) {
+            selectedFormat = format;
+            document.querySelectorAll('.format-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.querySelector(`.format-option[data-format="${format}"]`)?.classList.add('selected');
+        }
+
+        function updateSliderValues() {
+            const bitrate = document.getElementById('bitrateSlider').value;
+            const sampleRate = document.getElementById('sampleRateSlider').value;
+            document.getElementById('bitrateValue').textContent = bitrate + ' kbps';
+            document.getElementById('sampleRateValue').textContent = sampleRate + ' Hz';
+        }
+
+async function startExtraction() {
+            if (conversionActive || !selectedVideoFile) return;
+            
+            conversionActive = true;
+            document.getElementById('progressSection').classList.add('active');
+            document.getElementById('previewSection').style.display = 'none';
+            document.getElementById('formatSection').style.display = 'none';
+            document.getElementById('qualitySection').style.display = 'none';
+            document.getElementById('convertBtn').disabled = true;
+            document.getElementById('progressStatus').textContent = 'Uploading video and extracting audio...';
+            
+            const bitrate = parseInt(document.getElementById('bitrateSlider').value);
+            
+            try {
+                const formData = new FormData();
+                formData.append('file', selectedVideoFile);
+                formData.append('targetFormat', selectedFormat);
+                formData.append('bitrate', bitrate);
+
+                const token = localStorage.getItem('token');
+                const headers = {};
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                const response = await fetch(API_URL + '/convert/video-to-audio', {
+                    method: 'POST',
+                    headers: headers,
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    convertedFileUrl = result.downloadUrl;
+                    convertedFilename = result.filename;
+                    completeExtraction();
+                } else {
+                    showError('Extraction failed: ' + (result.error || result.message || 'Unknown error'));
+                    resetUI();
+                }
+            } catch (error) {
+                showError('Error: ' + error.message + '. Make sure backend is running on port 4000!');
+                resetUI();
+            }
+        }
+
+        function resetUI() {
+            conversionActive = false;
+            document.getElementById('convertBtn').disabled = false;
+            document.getElementById('progressSection').classList.remove('active');
+            document.getElementById('previewSection').style.display = 'block';
+            document.getElementById('formatSection').style.display = 'block';
+            document.getElementById('qualitySection').style.display = 'block';
+        }
+
+        function completeExtraction() {
+            document.getElementById('progressStatus').textContent = 'Done!';
+            
+            setTimeout(() => {
+                document.getElementById('progressSection').classList.remove('active');
+                document.getElementById('downloadSection').classList.add('active');
+                document.getElementById('downloadSection').scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+            
+            conversionActive = false;
+        }
+
+        function downloadAudio() {
+            if (convertedFileUrl) {
+                const fullUrl = convertedFileUrl.startsWith('http') ? convertedFileUrl : API_URL + convertedFileUrl;
+                
+                // Create download link - direct download without opening new tab
+                const link = document.createElement('a');
+                link.href = fullUrl;
+                link.setAttribute('download', convertedFilename || 'extracted-audio.' + selectedFormat);
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                showError('No audio file to download. Please extract audio first.');
+            }
+        }
+
+        function previewAudio() {
+            if (convertedFileUrl) {
+                // Construct proper URL - convertedFileUrl already starts with /api/files/converted/
+                let fullUrl = convertedFileUrl;
+                if (!convertedFileUrl.startsWith('http')) {
+                    fullUrl = 'http://localhost:4000' + convertedFileUrl;
+                }
+                document.getElementById('audioPlayer').src = fullUrl;
+                document.getElementById('audioFileName').textContent = convertedFilename || 'extracted-audio.' + selectedFormat;
+                document.getElementById('audioPreviewModal').classList.add('active');
+            } else {
+                showError('No audio file to preview. Please extract audio first.');
+            }
+        }
+
+        function closeAudioPreview() {
+            document.getElementById('audioPreviewModal').classList.remove('active');
+            document.getElementById('audioPlayer').pause();
+            document.getElementById('audioPlayer').src = '';
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeAudioPreview();
+            }
+        });
+
+        function convertAnother() {
+            selectedVideoFile = null;
+            conversionActive = false;
+            convertedFileUrl = null;
+            convertedFilename = null;
+            
+            closeAudioPreview();
+            
+            document.getElementById('previewSection').classList.remove('active');
+            document.getElementById('previewSection').style.display = 'none';
+            document.getElementById('formatSection').style.display = 'block';
+            document.getElementById('qualitySection').style.display = 'block';
+            document.getElementById('downloadSection').classList.remove('active');
+            document.getElementById('convertBtn').disabled = true;
+            
+            document.getElementById('uploadArea').innerHTML = `
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Drag & Drop your video here</h3>
+                <p>or click to browse files</p>
+                <p class="file-info">Supports: MP4, AVI, MOV, MKV, WMV, FLV, WEBM</p>
+                <p class="file-info">Max file size: 500MB</p>
+            `;
+            initializeDragAndDrop();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
+

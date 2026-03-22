@@ -1,0 +1,1966 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - File Converter</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/themes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Glass Navbar Styles */
+        :root { --glass-bg: rgba(255, 255, 255, 0.1); --glass-border: rgba(255, 255, 255, 0.2); --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }
+        body.glass-effect { background: linear-gradient(135deg, #000000 0%, #121212 25%, #1a1a1a 50%, #121212 75%, #000000 100%); min-height: 100vh; position: relative; overflow-x: hidden; }
+        .glass-bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 50%, rgba(138, 43, 226, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(147, 112, 219, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 80%, rgba(75, 0, 130, 0.1) 0%, transparent 50%); z-index: -1; }
+        .glass-navbar { background: var(--glass-bg); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-bottom: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); position: sticky; top: 0; z-index: 1000; padding: 1rem 2rem; }
+        .glass-navbar .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
+        .glass-logo { display: flex; align-items: center; gap: 12px; font-size: 1.8rem; font-weight: bold; color: white; text-decoration: none; }
+        .glass-logo i { font-size: 2.2rem; background: linear-gradient(135deg, var(--primary-color), #9370db); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass-container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; position: relative; z-index: 1; }
+        .nav-links { display: flex; gap: 1rem; align-items: center; }
+        .glass-nav-link { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); color: white; text-decoration: none; padding: 0.8rem 1.5rem; border-radius: 12px; transition: all 0.3s; display: flex; align-items: center; gap: 8px; font-weight: 500; }
+        .glass-nav-link:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
+        .glass-nav-link.active { background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(75, 0, 130, 0.3)); border-color: rgba(138, 43, 226, 0.5); }
+        
+        /* Contact Page Specific Styles */
+        .contact-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-top: 2rem;
+        }
+
+        .contact-hero {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.1), rgba(75, 0, 130, 0.1));
+            border-radius: 20px;
+        }
+
+        .contact-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .contact-hero p {
+            font-size: 1.2rem;
+            color: #aaa;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .contact-info-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .contact-info-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2);
+        }
+
+        .contact-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), #4b0082);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .contact-form-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            color: #777;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-select {
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-color), #4b0082);
+            color: white;
+            border: none;
+            padding: 1.2rem 3rem;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s;
+            margin: 0 auto;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(138, 43, 226, 0.4);
+        }
+
+        .faq-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .faq-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            background: rgba(138, 43, 226, 0.1);
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            margin-top: 0;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            margin-top: 1rem;
+        }
+
+        .faq-toggle {
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(180deg);
+        }
+
+        .support-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .support-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .support-option {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .support-option:hover {
+            transform: translateY(-5px);
+            background: rgba(138, 43, 226, 0.1);
+        }
+
+        .support-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .team-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .team-member {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            border: 2px solid var(--primary-color);
+        }
+
+        .member-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), #4b0082);
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .member-social {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            transition: all 0.3s;
+        }
+
+        .social-icon:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .map-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .map-container {
+            height: 400px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            margin-top: 2rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+        }
+
+        .map-placeholder i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .business-hours {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .hours-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .hours-table tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hours-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .hours-table td {
+            padding: 1rem;
+        }
+
+        .hours-table td:first-child {
+            font-weight: 500;
+        }
+
+        .hours-table td:last-child {
+            text-align: right;
+            color: #aaa;
+        }
+
+        .response-time {
+            background: rgba(76, 201, 240, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .response-time i {
+            font-size: 2rem;
+            color: #4cc9f0;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .contact-hero {
+                padding: 2rem 1rem;
+            }
+            
+            .contact-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-form-section,
+            .faq-section,
+            .support-section,
+            .team-section,
+            .map-section {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .contact-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .faq-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .support-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="glass-effect" data-theme="dark">
+    <div class="glass-bg-overlay"></div>
+    
+    <!-- Glass Navbar -->
+    <nav class="glass-navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="glass-logo">
+                <i class="fas fa-exchange-alt"></i>
+                <span>FileConverter</span>
+            </a>
+            <div class="nav-links">
+                <a href="../index.html" class="glass-nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="contact.html" class="glass-nav-link active"><i class="fas fa-envelope"></i> Contact Us</a>
+                <a href="account.html" class="glass-nav-link" id="userLink"><img id="navProfilePic" src="" style="width: 25px; height: 25px; border-radius: 50%; display: none; margin-right: 5px;"><!--<i class="fas fa-user-circle"></i>--> <span id="userText">Account</span></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="glass-container">
+        <!-- Hero Section -->
+        <div class="contact-hero">
+            <h1><i class="fas fa-headset"></i> We're Here to Help</h1>
+            <p>Have questions, feedback, or need support? Our team is ready to assist you 24/7. Get in touch with us through any of the following channels.</p>
+        </div>
+
+        <!-- Contact Information Cards -->
+        <div class="contact-grid">
+            <div class="contact-info-card">
+                <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h3>Email Support</h3>
+                <p>Get detailed responses from our support team</p>
+                <div class="contact-details">
+                    <p><strong>Technical Support:</strong></p>
+                    <p><!--<a href="mahajanvikram19@gmail.com" class="contact-link">-->mahajanvikram19@gmail.com</a></p>
+                </div>
+            </div>
+
+            <div class="contact-info-card">
+                <div class="contact-icon">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <h3>Phone Support</h3>
+                <p>Talk directly with our support specialists</p>
+                <div class="contact-details">
+                    <p><strong>Customer Support:</strong></p>
+                    <p><a href="tel:+91 7387469487" class="contact-link">+91 738-746-9487</a></p>
+                    <p><strong>Business Hours:</strong></p>
+                    <p>24/7 Availability</p>
+                </div>
+            </div>
+
+            <div class="contact-info-card">
+                <div class="contact-icon">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+                <h3>WhatsApp Support</h3>
+                <p>Chat with us directly on WhatsApp</p>
+                <div class="contact-details">
+                    <p><strong>Available:</strong></p>
+                    <p>24/7</p>
+                    <p><strong>Response Time:</strong></p>
+                    <p>Within 2 hours</p>
+                </div>
+                <button class="chat-btn" onclick="openWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+                </button>
+            </div>
+        </div>
+
+        <!-- Contact Form Section -->
+        <div class="contact-form-section">
+            <h2><i class="fas fa-paper-plane"></i> Send Us a Message</h2>
+            <p>Fill out the form below and we'll get back to you as soon as possible.</p>
+
+            <form id="contactForm" onsubmit="submitContactForm(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="firstName">
+                            <i class="fas fa-user"></i> First Name
+                        </label>
+                        <input type="text" id="firstName" class="form-input" placeholder="Enter your first name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="lastName">
+                            <i class="fas fa-user"></i> Last Name
+                        </label>
+                        <input type="text" id="lastName" class="form-input" placeholder="Enter your last name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="email">
+                            <i class="fas fa-envelope"></i> Email Address
+                        </label>
+                        <input type="email" id="email" class="form-input" placeholder="Enter your email address" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="phone">
+                            <i class="fas fa-phone"></i> Phone Number
+                        </label>
+                        <input type="tel" id="phone" class="form-input" placeholder="Enter your phone number">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label" for="subject">
+                            <i class="fas fa-tag"></i> Subject
+                        </label>
+                        <select id="subject" class="form-select" required>
+                            <option value="">Select a subject</option>
+                            <option value="general">General Inquiry</option>
+                            <option value="technical">Technical Support</option>
+                            <option value="billing">Billing Question</option>
+                            <option value="feature">Feature Request</option>
+                            <option value="bug">Report a Bug</option>
+                            <option value="partnership">Partnership Opportunity</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label" for="message">
+                            <i class="fas fa-comment"></i> Message
+                        </label>
+                        <textarea id="message" class="form-textarea" placeholder="Please describe your question or issue in detail..." required></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label" for="file">
+                            <i class="fas fa-paperclip"></i> Attach Files (Optional)
+                        </label>
+                        <input type="file" id="file" class="form-input" multiple>
+                        <small>You can attach screenshots or documents to help us understand your issue better (Max: 10MB)</small>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="newsletter" checked>
+                            <label for="newsletter">Subscribe to our newsletter for updates and tips</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="terms" required>
+                            <label for="terms">I agree to the <a href="#" onclick="showTerms()">Terms of Service</a> and <a href="#" onclick="showPrivacy()">Privacy Policy</a></label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Send Message
+                </button>
+            </form>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+            <p>Find quick answers to common questions about our service.</p>
+
+            <div class="faq-grid">
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <div class="faq-question">
+                        <span>What file formats do you support?</span>
+                        <i class="fas fa-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We support over 50 file formats including:</p>
+                        <ul>
+                            <li><strong>Images:</strong> PNG, JPG, JPEG, WEBP, BMP, GIF, SVG, TIFF</li>
+                            <li><strong>Videos:</strong> MP4, MOV, AVI, MKV, WMV, FLV, WEBM, MPEG</li>
+                            <li><strong>Audio:</strong> MP3, WAV, AAC, FLAC, OGG, M4A, AIFF, WMA</li>
+                            <li><strong>Documents:</strong> PDF, DOC, DOCX, TXT, PPT, PPTX, XLS, XLSX, RTF</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <div class="faq-question">
+                        <span>Is there a file size limit?</span>
+                        <i class="fas fa-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, we have different limits based on your account type:</p>
+                        <ul>
+                            <li><strong>Free Account:</strong> 100MB per file</li>
+                            <li><strong>Pro Account:</strong> 1GB per file</li>
+                            <li><strong>Business Account:</strong> 5GB per file</li>
+                        </ul>
+                        <p>For larger files, please contact our enterprise support.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <div class="faq-question">
+                        <span>How long are converted files stored?</span>
+                        <i class="fas fa-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>File retention periods vary by account type:</p>
+                        <ul>
+                            <li><strong>Free Account:</strong> 24 hours</li>
+                            <li><strong>Pro Account:</strong> 7 days</li>
+                            <li><strong>Business Account:</strong> 30 days</li>
+                        </ul>
+                        <p>You can always re-convert files if needed. Important files should be downloaded promptly.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <div class="faq-question">
+                        <span>Is my data secure?</span>
+                        <i class="fas fa-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Absolutely! We take security very seriously:</p>
+                        <ul>
+                            <li>256-bit SSL encryption for all file transfers</li>
+                            <li>Files are automatically deleted after retention period</li>
+                            <li>No third-party access to your files</li>
+                            <li>GDPR and CCPA compliant</li>
+                            <li>Regular security audits</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <div class="faq-question">
+                        <span>Can I convert files on mobile devices?</span>
+                        <i class="fas fa-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! Our website is fully responsive and works on all devices:</p>
+                        <ul>
+                            <li>Mobile browsers (Chrome, Safari, Firefox)</li>
+                            <li>Tablet devices</li>
+                            <li>Desktop computers</li>
+                        </ul>
+                        <p>We also have mobile apps available on:</p>
+                        <ul>
+                            <li><i class="fab fa-app-store"></i> iOS App Store</li>
+                            <li><i class="fab fa-google-play"></i> Google Play Store</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFAQ(this)">
+                    <div class="faq-question">
+                        <span>Do you offer API access?</span>
+                        <i class="fas fa-chevron-down faq-toggle"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! We offer a comprehensive API for developers:</p>
+                        <ul>
+                            <li>RESTful API with JSON responses</li>
+                            <li>Support for all conversion types</li>
+                            <li>Webhook notifications</li>
+                            <li>Detailed documentation</li>
+                            <li>Free tier with 100 conversions/month</li>
+                        </ul>
+                        <p>Visit our <a href="#" onclick="showAPI()">Developer Portal</a> for more information.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-footer">
+                <p>Can't find your question? <a href="#" onclick="scrollToForm()">Ask us directly</a></p>
+            </div>
+        </div>
+
+        <!-- Support Channels 
+        <div class="support-section">
+            <h2><i class="fas fa-headset"></i> Support Channels</h2>
+            <p>Choose the support channel that works best for you.</p>
+
+            <div class="support-options">
+                <div class="support-option">
+                    <div class="support-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3>Knowledge Base</h3>
+                    <p>Browse our comprehensive documentation and tutorials</p>
+                    <button class="support-btn" onclick="openKnowledgeBase()">
+                        <i class="fas fa-search"></i> Browse Articles
+                    </button>
+                </div>
+
+                <div class="support-option">
+                    <div class="support-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h3>Video Tutorials</h3>
+                    <p>Watch step-by-step guides on using all features</p>
+                    <button class="support-btn" onclick="openTutorials()">
+                        <i class="fas fa-play"></i> Watch Videos
+                    </button>
+                </div>
+
+                <div class="support-option">
+                    <div class="support-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Community Forum</h3>
+                    <p>Connect with other users and share solutions</p>
+                    <button class="support-btn" onclick="openCommunity()">
+                        <i class="fas fa-comments"></i> Join Community
+                    </button>
+                </div>
+
+                <div class="support-option">
+                    <div class="support-icon">
+                        <i class="fas fa-bug"></i>
+                    </div>
+                    <h3>Bug Reports</h3>
+                    <p>Report issues and track bug fixes</p>
+                    <button class="support-btn" onclick="openBugTracker()">
+                        <i class="fas fa-exclamation-circle"></i> Report Issue
+                    </button>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- Team Section -->
+        <div class="team-section">
+            <h2><i class="fas fa-users"></i> Meet Our Team</h2>
+            <p>Our dedicated team is here to ensure you have the best experience.</p>
+
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-avatar">VM</div>
+                    <h3>Vikram Mahajan</h3>
+                    <p class="member-role">Support Manager</p>
+                    <p class="member-bio">10+ years in customer support, ensures your queries are resolved promptly.</p>
+                    <div class="member-social">
+                        <a href="https://www.linkedin.com/in/vikram-mahajan-1a2b55378/" class="social-icon">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://github.com/mahajanvikram19" class="social-icon">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://www.instagram.com/vikram_mahajan19/" class="social-icon">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-avatar">AB</div>
+                    <h3>Atul Borse</h3>
+                    <p class="member-role">Technical Lead</p>
+                    <p class="member-bio">Expert in file conversion algorithms and system architecture.</p>
+                    <div class="member-social">
+                        <a href="https://github.com/Atulsborse" class="social-icon">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://www.instagram.com/atulborse7/" class="social-icon">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-avatar">RC</div>
+                    <h3>Rohit Chaudhari</h3>
+                    <p class="member-role">Product Manager</p>
+                    <p class="member-bio">Drives product development based on user feedback and market needs.</p>
+                    <div class="member-social">
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://www.instagram.com/rohit.chaudhari11/" class="social-icon">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <div class="member-avatar">AP</div>
+                    <h3>Arkan Pathan</h3>
+                    <p class="member-role">Customer Success</p>
+                    <p class="member-bio">Helps users get the most out of our platform with personalized guidance.</p>
+                    <div class="member-social">
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Location & Hours -->
+        <div class="map-section">
+            <h2><i class="fas fa-map-marker-alt"></i> Our Location</h2>
+            <p>Visit our headquarters or contact us remotely.</p>
+
+            <div class="map-container">
+                <div class="map-placeholder">
+                <i class="fas fa-map"></i>
+                    <h3>FileConverter Headquarters</h3>
+                    <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d433.636561858297!2d75.77338427598706!3d20.809483196001764!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sin!4v1772021163012!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                    width="600" 
+                    height="450" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy">
+                  </iframe>
+                    <p>Bodwad, Street Malkapur road pin code-425310</p>
+                    <p>Jalgaon</p>
+                </div>
+            </div>
+
+            <div class="business-hours">
+                <h3><i class="fas fa-clock"></i> Business Hours</h3>
+                <table class="hours-table">
+                    <tr>
+                        <td>Monday - Friday</td>
+                        <td>9:00 AM - 6:00 PM PST</td>
+                    </tr>
+                    <tr>
+                        <td>Saturday</td>
+                        <td>10:00 AM - 4:00 PM PST</td>
+                    </tr>
+                    <tr>
+                        <td>Sunday</td>
+                        <td>Closed</td>
+                    </tr>
+                    <tr>
+                        <td>24/7 Support</td>
+                        <td>Available via email and chat</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="response-time">
+                <i class="fas fa-bolt"></i>
+                <h3>Fast Response Times</h3>
+                <p>We pride ourselves on quick response times:</p>
+                <ul>
+                    <li><strong>Live Chat:</strong> Under 2 minutes</li>
+                    <li><strong>Email:</strong> Within 4 hours</li>
+                    <li><strong>Phone:</strong> Immediate during business hours</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>FileConverter</span>
+                    </div>
+                    <p>Convert files quickly and securely. Trusted by millions of users worldwide.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="https://www.instagram.com/vikram_mahajan19/"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.linkedin.com/in/vikram-mahajan-1a2b55378/"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://github.com/mahajanvikram19"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="image-converter.html">Image Converter</a></li>
+                        <li><a href="video-converter.html">Video Converter</a></li>
+                        <li><a href="audio-converter.html">Audio Converter</a></li>
+                        <li><a href="document-converter.html">Document Converter</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">API Reference</a></li>
+                        <li><a href="#">System Status</a></li>
+                        <li><a href="#">Contact Sales</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                        <li><a href="#">GDPR Compliance</a></li>
+                        <li><a href="#">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 FileConverter. All rights reserved. | College Project by Vikram Mahajan</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        // Check user login and update navbar
+        function checkUserLogin() {
+            const token = localStorage.getItem('token');
+            const userText = document.getElementById('userText');
+            const userLink = document.getElementById('userLink');
+            const navProfilePic = document.getElementById('navProfilePic');
+            
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    userText.textContent = payload.email ? payload.email.split('@')[0] : 'Account';
+                    
+                    // Load profile picture from localStorage user data
+                    const userData = JSON.parse(localStorage.getItem('user') || '{}');
+                    if (userData && userData.profile_picture) {
+                        navProfilePic.src = 'http://localhost:4000/api/files/profiles/' + userData.profile_picture;
+                        navProfilePic.style.display = 'block';
+                    } else {
+                        navProfilePic.style.display = 'none';
+                    }
+                } catch(e) {
+                    userText.textContent = 'Account';
+                    navProfilePic.style.display = 'none';
+                }
+            } else {
+                userText.textContent = 'Login';
+                navProfilePic.style.display = 'none';
+            }
+        }
+        
+        // Contact Page JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeContactPage();
+            checkUserLogin();
+        });
+
+        function initializeContactPage() {
+            console.log('Contact Page Initialized');
+            
+            // Initialize FAQ functionality
+            initializeFAQ();
+            
+            // Initialize form validation
+            initializeFormValidation();
+            
+            // Set up chat functionality
+            initializeChat();
+        }
+
+        // FAQ Functionality
+        function initializeFAQ() {
+            // Open first FAQ by default
+            const firstFAQ = document.querySelector('.faq-item');
+            if (firstFAQ) {
+                toggleFAQ(firstFAQ);
+            }
+        }
+
+        function toggleFAQ(faqItem) {
+            // Close all other FAQs
+            document.querySelectorAll('.faq-item').forEach(item => {
+                if (item !== faqItem) {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // Toggle current FAQ
+            faqItem.classList.toggle('active');
+        }
+
+        // Form Validation
+        function initializeFormValidation() {
+            const form = document.getElementById('contactForm');
+            const phoneInput = document.getElementById('phone');
+            
+            // Phone number formatting
+            phoneInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 3 && value.length <= 6) {
+                    value = value.replace(/(\d{3})(\d{1,3})/, '$1-$2');
+                } else if (value.length > 6) {
+                    value = value.replace(/(\d{3})(\d{3})(\d{1,4})/, '$1-$2-$3');
+                }
+                e.target.value = value;
+            });
+            
+            // File size validation
+            const fileInput = document.getElementById('file');
+            fileInput.addEventListener('change', function(e) {
+                const maxSize = 10 * 1024 * 1024; // 10MB
+                const files = e.target.files;
+                let totalSize = 0;
+                
+                for (let file of files) {
+                    totalSize += file.size;
+                }
+                
+                if (totalSize > maxSize) {
+                    alert('Total file size exceeds 10MB limit. Please select smaller files.');
+                    e.target.value = '';
+                }
+            });
+        }
+
+        // Form Submission
+        async function submitContactForm(event) {
+            event.preventDefault();
+            
+            // Get form data
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            
+            // Combine first and last name
+            const name = `${firstName} ${lastName}`.trim();
+            
+            // Validate form
+            if (!validateForm({ name, email, phone, subject, message })) {
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = event.target.querySelector('.submit-btn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
+            
+            try {
+                // Send to backend API
+                const response = await fetch('http://localhost:4000/api/contact/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        subject: subject,
+                        message: message
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Show success message
+                    showSuccessMessage(data.id);
+                    
+                    // Reset form
+                    document.getElementById('contactForm').reset();
+                } else {
+                    alert(data.message || 'Failed to send message. Please try again.');
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                alert('Failed to send message. Please try again or contact us directly.');
+            }
+            
+            // Reset button
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+
+        function validateForm(data) {
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(data.email)) {
+                alert('Please enter a valid email address.');
+                return false;
+            }
+            
+            // Phone validation (optional but must be valid if provided)
+            if (data.phone && data.phone.replace(/\D/g, '').length < 10) {
+                alert('Please enter a valid 10-digit phone number.');
+                return false;
+            }
+            
+            // Message length validation
+            if (data.message.length < 10) {
+                alert('Please provide a more detailed message (minimum 10 characters).');
+                return false;
+            }
+            
+            return true;
+        }
+
+        function showSuccessMessage(messageId) {
+            // Create success modal
+            const modal = document.createElement('div');
+            modal.className = 'success-modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Message Sent Successfully!</h3>
+                    <p>Thank you for contacting us. We'll get back to you within 24 hours.</p>
+                    <p><strong>Reference ID:</strong> FC${messageId || Date.now().toString().slice(-8)}</p>
+                    <button onclick="closeModal(this)">OK</button>
+                </div>
+            `;
+            
+            // Add styles
+            const style = document.createElement('style');
+            style.textContent = `
+                .success-modal {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000;
+                    animation: fadeIn 0.3s ease;
+                }
+                
+                .success-modal .modal-content {
+                    background: var(--card-bg);
+                    padding: 3rem;
+                    border-radius: 20px;
+                    text-align: center;
+                    max-width: 500px;
+                    width: 90%;
+                    border: 2px solid var(--primary-color);
+                    animation: slideUp 0.3s ease;
+                }
+                
+                .success-modal .modal-content i {
+                    font-size: 4rem;
+                    color: #4ade80;
+                    margin-bottom: 1.5rem;
+                }
+                
+                .success-modal .modal-content h3 {
+                    color: var(--primary-color);
+                    margin-bottom: 1rem;
+                }
+                
+                .success-modal .modal-content p {
+                    margin: 0.5rem 0;
+                    color: #aaa;
+                }
+                
+                .success-modal .modal-content button {
+                    background: var(--primary-color);
+                    color: white;
+                    border: none;
+                    padding: 1rem 2rem;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    margin-top: 1.5rem;
+                    font-size: 1rem;
+                }
+                
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                
+                @keyframes slideUp {
+                    from { transform: translateY(50px); opacity: 0; }
+                    to { transform: translateY(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(modal);
+        }
+
+        function closeModal(button) {
+            const modal = button.closest('.success-modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // Chat Functionality - Now connected to backend
+        function initializeChat() {
+            // Load chat history from localStorage and optionally from backend
+            loadChatMessages();
+        }
+
+        // Load chat messages from backend
+        async function loadChatMessages() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://localhost:4000/api/chat/messages', {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.messages) {
+                        displayChatMessages(data.messages);
+                    }
+                }
+            } catch (err) {
+                console.log('Loading chat from localStorage instead');
+                // Fallback to localStorage
+                const chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+                displayChatMessagesFromLocal(chatHistory);
+            }
+        }
+
+        // Display messages from backend
+        function displayChatMessages(messages) {
+            const chatBody = document.getElementById('chatBody');
+            if (!chatBody) return;
+            
+            if (messages.length === 0) {
+                // Show welcome message
+                addChatMessage('bot', 'Hello! How can I help you today?');
+                return;
+            }
+            
+            chatBody.innerHTML = messages.map(msg => `
+                <div class="chat-message ${msg.is_from_admin ? 'bot' : 'user'}">
+                    <div class="message-content">${msg.message}</div>
+                    <div class="message-time">${formatTime(msg.created_at)}</div>
+                </div>
+            `).join('');
+            
+            chatBody.scrollTop = chatBody.scrollHeight;
+            
+            // Save to localStorage as backup
+            localStorage.setItem('chatHistory', JSON.stringify(messages));
+        }
+
+        // Display messages from localStorage (fallback)
+        function displayChatMessagesFromLocal(chatHistory) {
+            const chatBody = document.getElementById('chatBody');
+            if (!chatBody) return;
+            
+            if (chatHistory.length === 0) {
+                addChatMessage('bot', 'Hello! How can I help you today?');
+                return;
+            }
+            
+            chatBody.innerHTML = chatHistory.map(msg => `
+                <div class="chat-message ${msg.sender}">
+                    <div class="message-content">${msg.text}</div>
+                    <div class="message-time">${msg.time}</div>
+                </div>
+            `).join('');
+            
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        // Format timestamp
+        function formatTime(timestamp) {
+            if (!timestamp) return '';
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+
+        function toggleChat() {
+            const chatWidget = document.getElementById('chatWidget');
+            if (chatWidget.style.display === 'none') {
+                openChat();
+            } else {
+                closeChat();
+            }
+        }
+
+        function openChat() {
+            const chatWidget = document.getElementById('chatWidget');
+            chatWidget.style.display = 'block';
+            
+            // Add welcome message if chat is empty
+            const chatBody = document.getElementById('chatBody');
+            if (chatBody && chatBody.children.length === 0) {
+                addChatMessage('bot', 'Hello! How can I help you today?');
+            }
+        }
+
+        function closeChat() {
+            const chatWidget = document.getElementById('chatWidget');
+            chatWidget.style.display = 'none';
+        }
+
+        // ============ CHAT SUPPORT FUNCTIONALITY ============
+        
+        // Initialize chat when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initChat();
+        });
+        
+        function initChat() {
+            var chatWidget = document.getElementById('chatWidget');
+            var chatBody = document.getElementById('chatBody');
+            var chatInput = document.getElementById('chatInput');
+            var chatToggle = document.getElementById('chatToggle');
+            var chatClose = document.getElementById('chatClose');
+            
+            if (!chatWidget || !chatBody || !chatInput) {
+                console.log('Chat elements not found');
+                return;
+            }
+            
+            // Load chat history from localStorage
+            loadChatHistory();
+            
+            // Chat toggle button
+            if (chatToggle) {
+                chatToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleChat();
+                });
+            }
+            
+            // Chat close button
+            if (chatClose) {
+                chatClose.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    chatWidget.style.display = 'none';
+                });
+            }
+            
+            // Send button click
+            var sendBtn = document.querySelector('.chat-input button');
+            if (sendBtn) {
+                sendBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleSendMessage();
+                });
+            }
+            
+            // Enter key press
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleSendMessage();
+                }
+            });
+            
+            // Prevent form submission
+            var chatForm = document.querySelector('.chat-input form');
+            if (chatForm) {
+                chatForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                });
+            }
+        }
+        
+        function toggleChat() {
+            var chatWidget = document.getElementById('chatWidget');
+            var chatBody = document.getElementById('chatBody');
+            
+            if (chatWidget.style.display === 'none') {
+                chatWidget.style.display = 'flex';
+                // Add welcome message if chat is empty
+                if (chatBody && chatBody.children.length === 0) {
+                    addMessage('bot', 'Hello! How can I help you today?');
+                }
+            } else {
+                chatWidget.style.display = 'none';
+            }
+        }
+        
+function handleSendMessage() {
+            var chatInput = document.getElementById('chatInput');
+            var message = chatInput.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message immediately to show in UI
+            var time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            addMessageToUI('user', message, time);
+            
+            // Clear input
+            chatInput.value = '';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            // Send message to backend API
+            sendMessageToBackend(message);
+        }
+        
+        // Send message to backend
+        async function sendMessageToBackend(message) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://localhost:4000/api/chat/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+                
+                const data = await response.json();
+                
+                hideTypingIndicator();
+                
+                if (data.success) {
+                    // Add bot response if available
+                    if (data.bot_response) {
+                        var botTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        addMessageToUI('bot', data.bot_response.text, botTime);
+                    }
+                } else {
+                    // Show error message
+                    addMessageToUI('bot', 'Sorry, there was an error. Please try again.', new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
+                }
+            } catch (err) {
+                console.error('Error sending message:', err);
+                hideTypingIndicator();
+                
+                // Fallback to local responses
+                var responses = [
+                    "Thanks for your message! Our support team will get back to you shortly.",
+                    "I understand. Let me help you with that.",
+                    "That's a great question! Here's what I can tell you...",
+                    "I've noted your concern. Is there anything specific you'd like to know?",
+                    "We're here to help! Could you provide more details about your issue?"
+                ];
+                var randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                addMessageToUI('bot', randomResponse, new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
+            }
+        }
+        
+        function addMessageToUI(sender, text, time) {
+            var chatBody = document.getElementById('chatBody');
+            if (!chatBody) return;
+            
+            var messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message ' + sender;
+            messageDiv.innerHTML = '<div class="message-content">' + escapeHtml(text) + '</div><div class="message-time">' + time + '</div>';
+            
+            chatBody.appendChild(messageDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+            
+            // Save to localStorage
+            saveChatMessage(sender, text, time);
+        }
+        
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function addMessage(sender, text) {
+            var chatBody = document.getElementById('chatBody');
+            if (!chatBody) return;
+            
+            var time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            var messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message ' + sender;
+            messageDiv.innerHTML = '<div class="message-content">' + text + '</div><div class="message-time">' + time + '</div>';
+            
+            chatBody.appendChild(messageDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+            
+            // Save to localStorage
+            saveChatMessage(sender, text, time);
+        }
+        
+        function showTypingIndicator() {
+            var chatBody = document.getElementById('chatBody');
+            if (!chatBody) return;
+            
+            var typingDiv = document.createElement('div');
+            typingDiv.className = 'chat-message bot';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = '<div class="message-content"><i class="fas fa-spinner fa-spin"></i> Typing...</div>';
+            
+            chatBody.appendChild(typingDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+        
+        function hideTypingIndicator() {
+            var typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        function saveChatMessage(sender, text, time) {
+            try {
+                var chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+                chatHistory.push({ sender: sender, text: text, time: time });
+                localStorage.setItem('chatHistory', JSON.stringify(chatHistory.slice(-50)));
+            } catch(e) {
+                console.log('Error saving chat:', e);
+            }
+        }
+        
+        function loadChatHistory() {
+            try {
+                var chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+                var chatBody = document.getElementById('chatBody');
+                if (!chatBody) return;
+                
+                chatBody.innerHTML = '';
+                chatHistory.forEach(function(msg) {
+                    var messageDiv = document.createElement('div');
+                    messageDiv.className = 'chat-message ' + msg.sender;
+                    messageDiv.innerHTML = '<div class="message-content">' + msg.text + '</div><div class="message-time">' + msg.time + '</div>';
+                    chatBody.appendChild(messageDiv);
+                });
+                
+                chatBody.scrollTop = chatBody.scrollHeight;
+            } catch(e) {
+                console.log('Error loading chat:', e);
+            }
+        }
+        
+        // ============ END CHAT SUPPORT ============
+
+        // Navigation Functions
+        function scrollToForm() {
+            document.querySelector('.contact-form-section').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        function openKnowledgeBase() {
+            alert('Knowledge base would open in a real application.');
+        }
+
+        function openTutorials() {
+            alert('Video tutorials would open in a real application.');
+        }
+
+        function openCommunity() {
+            alert('Community forum would open in a real application.');
+        }
+
+        function openBugTracker() {
+            alert('Bug tracker would open in a real application.');
+        }
+
+        function showTerms() {
+            alert('Terms of Service would be displayed in a real application.');
+        }
+
+        function showPrivacy() {
+            alert('Privacy Policy would be displayed in a real application.');
+        }
+
+        function showAPI() {
+            alert('Developer Portal would open in a real application.');
+        }
+
+        // WhatsApp Chat Function
+        function openWhatsApp() {
+            // Replace with your phone number (use international format without +)
+            const phoneNumber = '917387469487';
+            const message = 'Hello, I need help with File Converter';
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Additional Styles
+        const additionalStyles = document.createElement('style');
+        additionalStyles.textContent = `
+            .contact-link {
+                color: var(--primary-color);
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+            
+            .contact-link:hover {
+                color: #9370db;
+                text-decoration: underline;
+            }
+            
+            .chat-btn, .support-btn {
+                background: var(--primary-color);
+                color: white;
+                border: none;
+                padding: 0.8rem 1.5rem;
+                border-radius: 8px;
+                cursor: pointer;
+                margin-top: 1rem;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                transition: all 0.3s;
+            }
+            
+            .chat-btn:hover, .support-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+            }
+            
+            .checkbox-group {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin: 0.5rem 0;
+            }
+            
+            .checkbox-group input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+                accent-color: var(--primary-color);
+            }
+            
+            .checkbox-group label {
+                color: #aaa;
+                font-size: 0.9rem;
+            }
+            
+            .checkbox-group a {
+                color: var(--primary-color);
+                text-decoration: none;
+            }
+            
+            .checkbox-group a:hover {
+                text-decoration: underline;
+            }
+            
+            .faq-footer {
+                text-align: center;
+                margin-top: 2rem;
+                padding-top: 2rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .faq-footer a {
+                color: var(--primary-color);
+                text-decoration: none;
+                font-weight: 500;
+            }
+            
+            .faq-footer a:hover {
+                text-decoration: underline;
+            }
+            
+            .member-role {
+                color: var(--primary-color);
+                font-weight: 500;
+                margin: 0.5rem 0;
+            }
+            
+            .member-bio {
+                color: #aaa;
+                font-size: 0.9rem;
+                line-height: 1.6;
+                margin: 1rem 0;
+            }
+            
+            .footer {
+                background: var(--card-bg);
+                padding: 3rem 0 1rem;
+                margin-top: 3rem;
+            }
+            
+            .footer-container {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 0 2rem;
+            }
+            
+            .footer-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 2rem;
+                margin-bottom: 2rem;
+            }
+            
+            .footer-logo {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: var(--primary-color);
+                margin-bottom: 1rem;
+            }
+            
+            .footer-section h4 {
+                color: white;
+                margin-bottom: 1.5rem;
+            }
+            
+            .footer-section ul {
+                list-style: none;
+                padding: 0;
+            }
+            
+            .footer-section ul li {
+                margin-bottom: 0.8rem;
+            }
+            
+            .footer-section ul li a {
+                color: #aaa;
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+            
+            .footer-section ul li a:hover {
+                color: var(--primary-color);
+            }
+            
+            .footer-social {
+                display: flex;
+                gap: 1rem;
+                margin-top: 1rem;
+            }
+            
+            .footer-social a {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--primary-color);
+                transition: all 0.3s;
+            }
+            
+            .footer-social a:hover {
+                background: var(--primary-color);
+                color: white;
+            }
+            
+            .footer-bottom {
+                text-align: center;
+                padding-top: 2rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                color: #aaa;
+                font-size: 0.9rem;
+            }
+            
+.chat-widget {
+                position: fixed;
+                bottom: 100px;
+                right: 30px;
+                width: 380px;
+                height: 550px;
+                background: var(--card-bg);
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                border: 2px solid var(--primary-color);
+                z-index: 1000;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .chat-header {
+                background: var(--primary-color);
+                color: white;
+                padding: 1rem;
+                border-radius: 13px 13px 0 0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .chat-header h4 {
+                margin: 0;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .chat-close {
+                background: transparent;
+                border: none;
+                color: white;
+                cursor: pointer;
+                font-size: 1.2rem;
+            }
+            
+.chat-body {
+                flex: 1;
+                padding: 1rem;
+                overflow-y: auto;
+                overflow-x: hidden;
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            
+            .chat-message {
+                max-width: 85%;
+                padding: 0.8rem 1rem;
+                border-radius: 15px;
+                position: relative;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                overflow-x: hidden;
+                box-sizing: border-box;
+                align-self: flex-end;
+            }
+            
+            .chat-message.user {
+                background: var(--primary-color);
+                color: white;
+                border-radius: 15px 15px 0 15px;
+                margin-left: auto;
+            }
+            
+            .chat-message.bot {
+                background: rgba(255, 255, 255, 0.1);
+                color: var(--dark-text);
+                border-radius: 15px 15px 15px 0;
+                margin-right: auto;
+                align-self: flex-start;
+            }
+            
+            .message-content {
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                word-break: break-word;
+                max-width: 100%;
+                box-sizing: border-box;
+                white-space: pre-wrap;
+            }
+            
+            .message-time {
+                font-size: 0.7rem;
+                opacity: 0.7;
+                margin-top: 0.3rem;
+                display: block;
+            }
+            
+            .chat-input {
+                display: flex;
+                padding: 1rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .chat-input input {
+                flex: 1;
+                padding: 0.8rem;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid var(--border-color);
+                border-radius: 20px;
+                color: var(--dark-text);
+                margin-right: 0.5rem;
+            }
+            
+            .chat-input button {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: var(--primary-color);
+                border: none;
+                color: white;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .floating-chat-btn {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background: var(--primary-color);
+                color: white;
+                border: none;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
+                z-index: 999;
+                transition: all 0.3s;
+            }
+            
+            .floating-chat-btn:hover {
+                transform: scale(1.1);
+            }
+            
+            @media (max-width: 768px) {
+                .chat-widget {
+                    width: calc(100% - 40px);
+                    right: 20px;
+                    bottom: 80px;
+                    height: 400px;
+                }
+                
+                .floating-chat-btn {
+                    bottom: 20px;
+                    right: 20px;
+                }
+            }
+        `;
+        document.head.appendChild(additionalStyles);
+    </script>
+</body>
+</html>

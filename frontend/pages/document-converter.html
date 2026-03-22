@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Converter - File Converter</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/themes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Glass Navbar Styles */
+        :root { --glass-bg: rgba(255, 255, 255, 0.1); --glass-border: rgba(255, 255, 255, 0.2); --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }
+        body.glass-effect { background: linear-gradient(135deg, #000000 0%, #121212 25%, #1a1a1a 50%, #121212 75%, #000000 100%); min-height: 100vh; position: relative; overflow-x: hidden; }
+        .glass-bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 50%, rgba(138, 43, 226, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(147, 112, 219, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 80%, rgba(75, 0, 130, 0.1) 0%, transparent 50%); z-index: -1; }
+        .glass-navbar { background: var(--glass-bg); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); border-bottom: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); position: sticky; top: 0; z-index: 1000; padding: 1rem 2rem; }
+        .glass-navbar .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
+        .glass-logo { display: flex; align-items: center; gap: 12px; font-size: 1.8rem; font-weight: bold; color: white; text-decoration: none; }
+        .glass-logo i { font-size: 2.2rem; background: linear-gradient(135deg, var(--primary-color), #9370db); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass-container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; position: relative; z-index: 1; }
+        .nav-links { display: flex; gap: 1rem; align-items: center; }
+        .glass-nav-link { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); color: white; text-decoration: none; padding: 0.8rem 1.5rem; border-radius: 12px; transition: all 0.3s; display: flex; align-items: center; gap: 8px; font-weight: 500; }
+        .glass-nav-link:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
+        .glass-nav-link.active { background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(75, 0, 130, 0.3)); border-color: rgba(138, 43, 226, 0.5); }
+        
+        /* Navigation Dropdown Styles */
+        .nav-dropdown { position: relative; }
+        .nav-dropdown-menu { display: none; position: absolute; top: 100%; left: 0; background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 0.5rem; min-width: 200px; z-index: 1000; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); margin-top: 0.5rem; }
+        .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+        .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 0.8rem 1rem; color: rgba(255, 255, 255, 0.8); text-decoration: none; border-radius: 8px; transition: all 0.3s; }
+        .dropdown-item:hover { background: rgba(138, 43, 226, 0.2); color: white; }
+        .dropdown-item.active { background: rgba(138, 43, 226, 0.3); color: white; }
+        .dropdown-item i { width: 20px; text-align: center; }
+        .dropdown-toggle::after { content: ''; }
+        
+        /* Document Converter Specific Styles */
+        .document-converter-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-top: 2rem;
+        }
+
+        .document-upload-area {
+            border: 3px dashed var(--primary-color);
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(138, 43, 226, 0.05);
+        }
+
+        .document-upload-area:hover {
+            background: rgba(138, 43, 226, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .document-upload-area i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .document-preview-section {
+            display: none;
+            margin: 2rem 0;
+        }
+
+        .document-preview-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .document-preview-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .document-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .document-info-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .document-info-card i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .conversion-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .conversion-flow-item {
+            text-align: center;
+            position: relative;
+        }
+
+        .conversion-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(138, 43, 226, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .conversion-arrow {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .document-format-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .document-format-option {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .document-format-option:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+
+        .document-format-option.selected {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .document-format-option.selected i {
+            color: white;
+        }
+
+        .document-format-option i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .format-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .document-settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .document-settings-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+        }
+
+        .settings-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .settings-group h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quality-preset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .quality-preset {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quality-preset:hover {
+            transform: scale(1.05);
+        }
+
+        .quality-preset.selected {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .slider-container {
+            margin: 1.5rem 0;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .slider-value {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .page-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .page-option {
+            padding: 0.8rem 1.2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .page-option:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .page-option.selected {
+            background: var(--primary-color);
+            color: white;
+            border-color: white;
+        }
+
+        .ocr-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ocr-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .ocr-option {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .ocr-option:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .ocr-option.selected {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .ocr-option i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .ocr-option.selected i {
+            color: white;
+        }
+
+        .document-convert-btn {
+            background: linear-gradient(135deg, var(--primary-color), #4b0082);
+            color: white;
+            border: none;
+            padding: 1.2rem 3rem;
+            font-size: 1.2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            display: block;
+            margin: 3rem auto;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .document-convert-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(138, 43, 226, 0.4);
+        }
+
+        .document-convert-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .conversion-progress-document {
+            display: none;
+            text-align: center;
+            margin: 2rem 0;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+
+        .progress-stages-document {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .progress-stages-document::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 1;
+        }
+
+        .progress-stage-document {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .stage-icon-document {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            color: #aaa;
+        }
+
+        .progress-stage-document.active .stage-icon-document {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .progress-stage-document.completed .stage-icon-document {
+            background: #4ade80;
+            color: white;
+        }
+
+        .stage-name-document {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        .progress-stage-document.active .stage-name-document {
+            color: var(--primary-color);
+        }
+
+        .progress-stage-document.completed .stage-name-document {
+            color: #4ade80;
+        }
+
+        .progress-details-document {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .progress-detail-document {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .progress-detail-document i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .progress-detail-value {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            margin: 0.5rem 0;
+        }
+
+        .download-section-document {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+            background: rgba(138, 43, 226, 0.1);
+            border-radius: 15px;
+            margin: 2rem 0;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .download-section-document.active {
+            display: block;
+        }
+
+        .conversion-summary-document {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .summary-card-document {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .summary-card-document h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .summary-item-document {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .summary-item-document:last-child {
+            border-bottom: none;
+        }
+
+        .download-options-document {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .download-btn-document {
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.3s;
+            min-width: 200px;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .download-btn-primary {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .download-btn-secondary {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .download-btn-document:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(138, 43, 226, 0.3);
+        }
+
+        .document-tips {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+
+        .tips-grid-document {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .tip-card-document {
+            background: rgba(138, 43, 226, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .tip-card-document:hover {
+            transform: translateY(-5px);
+            background: rgba(138, 43, 226, 0.2);
+        }
+
+        .tip-card-document i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .tip-card-document h4 {
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .batch-conversion-document {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .batch-document-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 1rem 0;
+        }
+
+        .batch-document-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .batch-document-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(138, 43, 226, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .batch-document-icon i {
+            color: var(--primary-color);
+        }
+
+        .batch-document-info {
+            flex: 1;
+        }
+
+        .batch-document-remove {
+            background: transparent;
+            border: none;
+            color: #ff4444;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .text-preview {
+            max-height: 300px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        @media (max-width: 768px) {
+            .document-converter-container {
+                padding: 1.5rem;
+            }
+            
+            .document-upload-area {
+                padding: 2rem 1rem;
+            }
+            
+            .document-format-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .document-settings-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .conversion-flow {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .conversion-arrow {
+                transform: rotate(90deg);
+            }
+            
+            .download-options-document {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .download-btn-document {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .document-format-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-stages-document {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .progress-stages-document::before {
+                display: none;
+            }
+            
+            .ocr-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="glass-effect" data-theme="dark">
+    <div class="glass-bg-overlay"></div>
+    
+    <!-- Glass Navbar -->
+    <nav class="glass-navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="glass-logo">
+                <i class="fas fa-exchange-alt"></i>
+                <span>FileConverter</span>
+            </a>
+            <div class="nav-links">
+                <a href="../index.html" class="glass-nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="contact.html" class="glass-nav-link"><i class="fas fa-envelope"></i> Contact Us</a>
+<a href="account.html" class="glass-nav-link" id="userLink"><img id="navProfilePic" src="" style="width: 25px; height: 25px; border-radius: 50%; display: none; margin-right: 5px;"><i class="fas fa-user-circle"></i> <span id="userText">Account</span></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="glass-container">
+        <div class="document-converter-container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1><i class="fas fa-file-alt"></i> Document Converter</h1>
+                <p>Convert documents between PDF, DOCX, TXT, PPT, XLS, and more with advanced options</p>
+            </div>
+
+            <!-- Upload Area -->
+            <div class="document-upload-area" id="documentUploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Drag & Drop your documents here</h3>
+                <p>or click to browse files</p>
+                <p class="file-info">Supports: PDF, DOCX, DOC, TXT, PPTX, XLSX, HTML</p>
+                <p class="file-info">Max file size: 50MB</p>
+                <input type="file" id="documentFileInput" accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.xls,.xlsx,.odt,.rtf,.html" hidden>
+                <input type="file" id="batchDocumentInput" multiple accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.xls,.xlsx,.odt,.rtf,.html" hidden>
+            </div>
+
+            <!-- Document Preview -->
+            <div class="document-preview-section" id="documentPreviewSection">
+                <h3><i class="fas fa-eye"></i> Document Preview</h3>
+                <div class="document-preview-container">
+                    <div class="document-info" id="documentInfo">
+                        <h4 id="documentFileName">document.pdf</h4>
+                        <p id="documentFileInfo">Pages: 10 | Size: 2.5 MB | Format: PDF</p>
+                    </div>
+                    
+                    <!-- Text Preview (for text-based documents) -->
+                    <div class="text-preview" id="textPreview">
+                        <!-- Text content will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Document Info -->
+                <div class="document-info-grid">
+                    <div class="document-info-card">
+                        <i class="fas fa-file"></i>
+                        <h4 id="documentName">document.pdf</h4>
+                        <p>File Name</p>
+                    </div>
+                    <div class="document-info-card">
+                        <i class="fas fa-file-alt"></i>
+                        <h4 id="documentType">PDF</h4>
+                        <p>File Type</p>
+                    </div>
+                    <div class="document-info-card">
+                        <i class="fas fa-layer-group"></i>
+                        <h4 id="documentPages">10</h4>
+                        <p>Pages</p>
+                    </div>
+                    <div class="document-info-card">
+                        <i class="fas fa-weight-hanging"></i>
+                        <h4 id="documentSize">2.5 MB</h4>
+                        <p>File Size</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Batch Conversion -->
+            <div class="batch-conversion-document" id="batchConversion" style="display: none;">
+                <h3><i class="fas fa-layer-group"></i> Batch Conversion</h3>
+                <p>Convert multiple documents at once</p>
+                <div class="batch-document-list" id="batchDocumentList">
+                    <!-- Batch documents will be added here -->
+                </div>
+                <button class="download-btn-secondary" onclick="document.getElementById('batchDocumentInput').click()">
+                    <i class="fas fa-plus"></i> Add More Documents
+                </button>
+            </div>
+
+            <!-- Conversion Flow -->
+            <div class="conversion-flow">
+                <div class="conversion-flow-item">
+                    <div class="conversion-icon">
+                        <i class="fas fa-file-upload"></i>
+                    </div>
+                    <div>Upload Document</div>
+                </div>
+                
+                <div class="conversion-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <div class="conversion-flow-item">
+                    <div class="conversion-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div>Configure Settings</div>
+                </div>
+                
+                <div class="conversion-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <div class="conversion-flow-item">
+                    <div class="conversion-icon">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <div>Convert</div>
+                </div>
+                
+                <div class="conversion-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <div class="conversion-flow-item">
+                    <div class="conversion-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <div>Download Result</div>
+                </div>
+            </div>
+
+            <!-- Conversion Settings -->
+            <div class="conversion-settings">
+                <h2><i class="fas fa-sliders-h"></i> Conversion Settings</h2>
+                
+                <!-- Format Selection -->
+                <div class="section">
+                    <h3><i class="fas fa-format"></i> Convert To</h3>
+                    <div class="document-format-options">
+                        <div class="document-format-option" data-format="pdf">
+                            <i class="fas fa-file-pdf"></i>
+                            <h4>PDF</h4>
+                            <p>Portable Document Format</p>
+                            <div class="format-badge">Universal</div>
+                        </div>
+                        
+                        <div class="document-format-option" data-format="docx">
+                            <i class="fas fa-file-word"></i>
+                            <h4>DOCX</h4>
+                            <p>Microsoft Word Document</p>
+                            <div class="format-badge">Editable</div>
+                        </div>
+                        
+                        <div class="document-format-option" data-format="txt">
+                            <i class="fas fa-file-alt"></i>
+                            <h4>TXT</h4>
+                            <p>Plain Text File</p>
+                            <div class="format-badge">Simple</div>
+                        </div>
+                        
+                        <div class="document-format-option" data-format="html">
+                            <i class="fab fa-html5"></i>
+                            <h4>HTML</h4>
+                            <p>Web Page Format</p>
+                            <div class="format-badge">Web</div>
+                        </div>
+                        
+                        <div class="document-format-option" data-format="pptx">
+                            <i class="fas fa-file-powerpoint"></i>
+                            <h4>PPTX</h4>
+                            <p>PowerPoint Presentation</p>
+                            <div class="format-badge">Slides</div>
+                        </div>
+                        
+                        <div class="document-format-option" data-format="xlsx">
+                            <i class="fas fa-file-excel"></i>
+                            <h4>XLSX</h4>
+                            <p>Excel Spreadsheet</p>
+                            <div class="format-badge">Data</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Settings Grid -->
+                <div class="document-settings-grid">
+                    <!-- Quality & Layout -->
+                    <div class="document-settings-section">
+                        <h3><i class="fas fa-tachometer-alt"></i> Quality & Layout</h3>
+                        
+                        <div class="settings-group">
+                            <h4><i class="fas fa-compress-alt"></i> Quality Presets</h4>
+                            <div class="quality-preset-grid">
+                                <div class="quality-preset selected" data-preset="high">
+                                    <i class="fas fa-crown"></i>
+                                    <div>High</div>
+                                </div>
+                                <div class="quality-preset" data-preset="medium">
+                                    <i class="fas fa-balance-scale"></i>
+                                    <div>Medium</div>
+                                </div>
+                                <div class="quality-preset" data-preset="low">
+                                    <i class="fas fa-bolt"></i>
+                                    <div>Fast</div>
+                                </div>
+                                <div class="quality-preset" data-preset="custom">
+                                    <i class="fas fa-sliders-h"></i>
+                                    <div>Custom</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
+                            <h4><i class="fas fa-file-image"></i> Image Quality</h4>
+                            <div class="slider-container">
+                                <input type="range" class="slider" id="imageQualitySlider" min="1" max="10" value="8">
+                                <div class="slider-labels">
+                                    <span>Low</span>
+                                    <span class="slider-value" id="imageQualityValue">High</span>
+                                    <span>Max</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
+                            <h4><i class="fas fa-columns"></i> Page Size</h4>
+                            <div class="page-options">
+                                <div class="page-option selected" data-size="a4">A4</div>
+                                <div class="page-option" data-size="letter">Letter</div>
+                                <div class="page-option" data-size="legal">Legal</div>
+                                <div class="page-option" data-size="a3">A3</div>
+                                <div class="page-option" data-size="custom">Custom</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Options -->
+                    <div class="document-settings-section">
+                        <h3><i class="fas fa-cogs"></i> Advanced Options</h3>
+                        
+                        <div class="settings-group">
+                            <h4><i class="fas fa-columns"></i> Page Range</h4>
+                            <div class="input-group">
+                                <input type="text" id="pageRange" placeholder="e.g., 1-5, 8, 11-13" style="width: 100%; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); border-radius: 5px; color: var(--dark-text);">
+                                <small>Leave empty for all pages</small>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
+                            <h4><i class="fas fa-font"></i> Font Settings</h4>
+                            <div class="toggle-switch">
+                                <label>Embed Fonts</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="embedFonts" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-switch">
+                                <label>Preserve Formatting</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="preserveFormatting" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
+                            <h4><i class="fas fa-lock"></i> Security</h4>
+                            <div class="toggle-switch">
+                                <label>Password Protect</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="passwordProtect">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div id="passwordFields" style="display: none; margin-top: 1rem;">
+                                <input type="password" id="documentPassword" placeholder="Enter password" style="width: 100%; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); border-radius: 5px; color: var(--dark-text); margin-bottom: 0.5rem;">
+                                <input type="password" id="confirmPassword" placeholder="Confirm password" style="width: 100%; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); border-radius: 5px; color: var(--dark-text);">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OCR Section -->
+                <div class="ocr-section" id="ocrSection">
+                    <h3><i class="fas fa-eye"></i> OCR (Optical Character Recognition)</h3>
+                    <p>Extract text from scanned documents or images</p>
+                    
+                    <div class="ocr-options">
+                        <div class="ocr-option" data-ocr="none">
+                            <i class="fas fa-ban"></i>
+                            <h4>No OCR</h4>
+                            <p>Keep as image</p>
+                        </div>
+                        
+                        <div class="ocr-option selected" data-ocr="fast">
+                            <i class="fas fa-bolt"></i>
+                            <h4>Fast OCR</h4>
+                            <p>Quick text extraction</p>
+                        </div>
+                        
+                        <div class="ocr-option" data-ocr="accurate">
+                            <i class="fas fa-search"></i>
+                            <h4>Accurate OCR</h4>
+                            <p>High accuracy</p>
+                        </div>
+                        
+                        <div class="ocr-option" data-ocr="multilingual">
+                            <i class="fas fa-globe"></i>
+                            <h4>Multilingual</h4>
+                            <p>Multiple languages</p>
+                        </div>
+                    </div>
+                    
+                    <div class="language-selection" style="margin-top: 1.5rem;">
+                        <h4><i class="fas fa-language"></i> Language Selection</h4>
+                        <select id="ocrLanguage" style="width: 100%; padding: 0.8rem; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); border-radius: 5px; color: var(--dark-text); margin-top: 0.5rem;">
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="zh">Chinese</option>
+                            <option value="ja">Japanese</option>
+                            <option value="ar">Arabic</option>
+                            <option value="hi">Hindi</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Convert Button -->
+                <button class="document-convert-btn" id="documentConvertBtn" disabled>
+                    <i class="fas fa-sync-alt"></i> Convert Document
+                </button>
+            </div>
+
+            <!-- Conversion Progress -->
+            <div class="conversion-progress-document" id="conversionProgress">
+                <h3><i class="fas fa-sync fa-spin"></i> Converting Document...</h3>
+                
+                <div class="progress-stages-document">
+                    <div class="progress-stage-document active" id="stage1">
+                        <div class="stage-icon-document">
+                            <i class="fas fa-file-import"></i>
+                        </div>
+                        <div class="stage-name-document">Reading</div>
+                    </div>
+                    <div class="progress-stage-document" id="stage2">
+                        <div class="stage-icon-document">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <div class="stage-name-document">Processing</div>
+                    </div>
+                    <div class="progress-stage-document" id="stage3">
+                        <div class="stage-icon-document">
+                            <i class="fas fa-font"></i>
+                        </div>
+                        <div class="stage-name-document">Formatting</div>
+                    </div>
+                    <div class="progress-stage-document" id="stage4">
+                        <div class="stage-icon-document">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="stage-name-document">Finalizing</div>
+                    </div>
+                </div>
+
+                <div class="progress-details-document">
+                    <div class="progress-detail-document">
+                        <i class="fas fa-clock"></i>
+                        <div>Time Elapsed</div>
+                        <span class="progress-detail-value" id="timeElapsed">0s</span>
+                    </div>
+                    <div class="progress-detail-document">
+                        <i class="fas fa-layer-group"></i>
+                        <div>Pages Processed</div>
+                        <span class="progress-detail-value" id="pagesProcessed">0/0</span>
+                    </div>
+                    <div class="progress-detail-document">
+                        <i class="fas fa-weight-hanging"></i>
+                        <div>File Size</div>
+                        <span class="progress-detail-value" id="progressFileSize">0 MB</span>
+                    </div>
+                    <div class="progress-detail-document">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <div>Progress</div>
+                        <span class="progress-detail-value" id="progressPercent">0%</span>
+                    </div>
+                </div>
+
+                <div class="progress-status" id="progressStatus">
+                    Initializing document conversion...
+                </div>
+            </div>
+
+            <!-- Download Section -->
+            <div class="download-section-document" id="downloadSection">
+                <h3><i class="fas fa-check-circle" style="color: #4ade80;"></i> Conversion Complete!</h3>
+                <p>Your document has been converted successfully</p>
+
+                <div class="conversion-summary-document">
+                    <div class="summary-card-document">
+                        <h4><i class="fas fa-info-circle"></i> Conversion Details</h4>
+                        <div class="summary-item-document">
+                            <span>Original Format:</span>
+                            <span id="originalFormat">PDF</span>
+                        </div>
+                        <div class="summary-item-document">
+                            <span>Target Format:</span>
+                            <span id="targetFormat">DOCX</span>
+                        </div>
+                        <div class="summary-item-document">
+                            <span>Pages:</span>
+                            <span id="totalPages">10</span>
+                        </div>
+                        <div class="summary-item-document">
+                            <span>OCR Applied:</span>
+                            <span id="ocrApplied">Yes</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-card-document">
+                        <h4><i class="fas fa-chart-bar"></i> File Statistics</h4>
+                        <div class="summary-item-document">
+                            <span>Original Size:</span>
+                            <span id="originalSize">2.5 MB</span>
+                        </div>
+                        <div class="summary-item-document">
+                            <span>Converted Size:</span>
+                            <span id="convertedSize">1.8 MB</span>
+                        </div>
+                        <div class="summary-item-document">
+                            <span>Compression:</span>
+                            <span id="sizeReduction">28%</span>
+                        </div>
+                        <div class="summary-item-document">
+                            <span>Time Taken:</span>
+                            <span id="totalTimeTaken">12 seconds</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-card-document">
+                        <h4><i class="fas fa-cog"></i> Quality Settings</h4>
+                        <div class="summary-item-document">
+                            <span>Image Quality:</span>
+                            <span id="finalImageQuality">High</span>
+                        </div>
+                        <div class="summary-item-document">
+                            <span>Page Size:</span>
+                            <span id="finalPageSize">A4</span>
+                        </div>
+                        <div class="summary-item-document">
+                            <span>Fonts Embedded:</span>
+                            <span id="fontsEmbedded">Yes</span>
+                        </div>
+                        <div class="summary-item-document">
+                            <span>Password Protected:</span>
+                            <span id="passwordProtected">No</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="download-options-document">
+                    <button class="download-btn-document download-btn-primary" id="downloadDocumentBtn">
+                        <i class="fas fa-download"></i> Download Document
+                    </button>
+                    <button class="download-btn-document download-btn-secondary" id="previewDocumentBtn">
+                        <i class="fas fa-eye"></i> Preview Document
+                    </button>
+                    <button class="download-btn-document download-btn-secondary" onclick="convertAnother()">
+                        <i class="fas fa-redo"></i> Convert Another
+                    </button>
+                    <button class="download-btn-document download-btn-secondary" onclick="saveToCloud()">
+                        <i class="fas fa-cloud-upload-alt"></i> Save to Cloud
+                    </button>
+                </div>
+
+                <div class="share-section">
+                    <h4>Share your document:</h4>
+                    <div class="share-buttons">
+                        <button class="share-btn" onclick="shareDocument('email')">
+                            <i class="fas fa-envelope"></i> Email
+                        </button>
+                        <button class="share-btn" onclick="shareDocument('link')">
+                            <i class="fas fa-link"></i> Get Link
+                        </button>
+                        <button class="share-btn" onclick="shareDocument('drive')">
+                            <i class="fab fa-google-drive"></i> Drive
+                        </button>
+                        <button class="share-btn" onclick="shareDocument('print')">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Tips -->
+            <div class="document-tips">
+                <h3><i class="fas fa-lightbulb"></i> Document Conversion Tips</h3>
+                <div class="tips-grid-document">
+                    <div class="tip-card-document">
+                        <i class="fas fa-file-pdf"></i>
+                        <h4>PDF Conversion</h4>
+                        <p>PDF to Word conversion preserves formatting best when original PDF was created from text, not scanned.</p>
+                    </div>
+                    <div class="tip-card-document">
+                        <i class="fas fa-eye"></i>
+                        <h4>OCR Usage</h4>
+                        <p>Use OCR for scanned documents to make them editable. Accurate OCR is slower but provides better results.</p>
+                    </div>
+                    <div class="tip-card-document">
+                        <i class="fas fa-compress-alt"></i>
+                        <h4>File Size</h4>
+                        <p>For email attachments, convert to compressed formats or reduce image quality to decrease file size.</p>
+                    </div>
+                    <div class="tip-card-document">
+                        <i class="fas fa-font"></i>
+                        <h4>Formatting</h4>
+                        <p>Embed fonts to ensure document appears the same on all devices, especially for PDF conversions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/converters.js"></script>
+    <script>
+        // Document Converter Variables
+        let selectedDocumentFile = null;
+        let selectedDocuments = [];
+        let selectedFormat = 'pdf';
+        let selectedPageSize = 'a4';
+        let selectedOCR = 'fast';
+        let conversionActive = false;
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDocumentConverter();
+            setupEventListeners();
+            checkUserLogin();
+            
+            // Handle Enter key for document conversion
+            document.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && selectedDocumentFile && !conversionActive) {
+                    startConversion();
+                }
+            });
+        });
+
+// Check user login and update navbar
+        function checkUserLogin() {
+            const token = localStorage.getItem('token');
+            const userText = document.getElementById('userText');
+            const navProfilePic = document.getElementById('navProfilePic');
+            const userIcon = document.querySelector('#userLink .fa-user-circle');
+            
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    userText.textContent = payload.email ? payload.email.split('@')[0] : 'Account';
+                    
+                    // Load profile picture
+                    const userData = JSON.parse(localStorage.getItem('user') || '{}');
+                    if (userData && userData.profile_picture) {
+                        navProfilePic.src = 'http://localhost:4000/api/files/profiles/' + userData.profile_picture;
+                        navProfilePic.style.display = 'block';
+                        if (userIcon) userIcon.style.display = 'none';
+                    }
+                } catch(e) {
+                    userText.textContent = 'Account';
+                }
+            } else {
+                userText.textContent = 'Login';
+                navProfilePic.style.display = 'none';
+                if (userIcon) userIcon.style.display = 'inline-block';
+            }
+        }
+
+        // Initialize document converter
+        function initializeDocumentConverter() {
+            console.log('Document Converter Initialized');
+            
+            // Initialize drag and drop
+            initializeDragAndDropDocument();
+            
+            // Set default selections
+            selectFormat('pdf');
+            selectPageSize('a4');
+            selectOCR('fast');
+            selectQualityPreset('high');
+            
+            // Update slider values
+            updateSliderValues();
+            
+            // Setup password toggle
+            setupPasswordToggle();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Format selection
+            document.querySelectorAll('.document-format-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    selectFormat(this.dataset.format);
+                });
+            });
+
+            // Page size selection
+            document.querySelectorAll('.page-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    selectPageSize(this.dataset.size);
+                });
+            });
+
+            // OCR selection
+            document.querySelectorAll('.ocr-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    selectOCR(this.dataset.ocr);
+                });
+            });
+
+            // Quality presets
+            document.querySelectorAll('.quality-preset').forEach(preset => {
+                preset.addEventListener('click', function() {
+                    selectQualityPreset(this.dataset.preset);
+                });
+            });
+
+            // Sliders
+            document.getElementById('imageQualitySlider').addEventListener('input', updateSliderValues);
+
+            // Convert button
+            document.getElementById('documentConvertBtn').addEventListener('click', startConversion);
+
+            // Download buttons
+            document.getElementById('previewDocumentBtn')?.addEventListener('click', previewConvertedDocument);
+            document.getElementById('downloadDocumentBtn')?.addEventListener('click', downloadDocument);
+
+            // Batch file input
+            document.getElementById('batchDocumentInput').addEventListener('change', handleBatchDocuments);
+        }
+
+        // Setup password toggle
+        function setupPasswordToggle() {
+            const passwordToggle = document.getElementById('passwordProtect');
+            const passwordFields = document.getElementById('passwordFields');
+            
+            passwordToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    passwordFields.style.display = 'block';
+                } else {
+                    passwordFields.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialize drag and drop for documents
+        function initializeDragAndDropDocument() {
+            const uploadArea = document.getElementById('documentUploadArea');
+            const fileInput = document.getElementById('documentFileInput');
+
+            if (!uploadArea || !fileInput) return;
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                uploadArea.style.backgroundColor = 'rgba(138, 43, 226, 0.2)';
+            }
+
+            function unhighlight() {
+                uploadArea.style.backgroundColor = '';
+            }
+
+            uploadArea.addEventListener('drop', handleDrop, false);
+            uploadArea.addEventListener('click', () => fileInput.click());
+
+            fileInput.addEventListener('change', handleFileInput);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleDocumentFiles(files);
+            }
+
+            function handleFileInput(e) {
+                const files = e.target.files;
+                if (files.length > 0) {
+                    handleDocumentFiles(files);
+                }
+            }
+        }
+
+        // Handle document files
+        function handleDocumentFiles(files) {
+            if (files.length === 1) {
+                // Single file
+                handleDocumentFile(files[0]);
+            } else {
+                // Multiple files - batch conversion
+                handleBatchDocuments({ target: { files } });
+            }
+        }
+
+        // Handle single document file
+        function handleDocumentFile(file) {
+            if (!isValidDocumentFile(file)) {
+                alert('Please upload a valid document file (PDF, DOCX, TXT, etc.)!');
+                return;
+            }
+
+            selectedDocumentFile = file;
+            selectedDocuments = [file];
+            
+            // Show preview section
+            document.getElementById('documentPreviewSection').classList.add('active');
+            
+            // Hide batch conversion
+            document.getElementById('batchConversion').style.display = 'none';
+            
+            // Update file info
+            document.getElementById('documentFileName').textContent = file.name;
+            document.getElementById('documentName').textContent = file.name;
+            document.getElementById('documentSize').textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+            
+            // Get file extension
+            const extension = file.name.split('.').pop().toUpperCase();
+            document.getElementById('documentType').textContent = extension;
+            
+            // Simulate document info
+            const pages = Math.max(1, Math.floor(file.size / 50000)); // Rough estimate
+            document.getElementById('documentPages').textContent = pages;
+            document.getElementById('documentFileInfo').textContent = 
+                `Pages: ${pages} | Size: ${(file.size / (1024 * 1024)).toFixed(2)} MB | Format: ${extension}`;
+            
+            // Show text preview for text-based files
+            if (extension.toLowerCase() === 'txt' || extension.toLowerCase() === 'html') {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('textPreview').textContent = e.target.result.substring(0, 1000) + '...';
+                };
+                reader.readAsText(file);
+            } else {
+                document.getElementById('textPreview').textContent = 
+                    `[Preview not available for ${extension} files. Convert to view content.]`;
+            }
+            
+            // Update upload area
+            document.getElementById('documentUploadArea').innerHTML = `
+                <i class="fas fa-check-circle" style="color: #4ade80;"></i>
+                <h3>${file.name}</h3>
+                <p>Ready for conversion</p>
+                <p class="file-info">Click to select a different file</p>
+            `;
+            
+            // Re-add click listener
+            document.getElementById('documentUploadArea').addEventListener('click', () => {
+                document.getElementById('documentFileInput').click();
+            });
+            
+            // Enable convert button
+            document.getElementById('documentConvertBtn').disabled = false;
+        }
+
+        // Handle batch documents
+        function handleBatchDocuments(event) {
+            const files = Array.from(event.target.files);
+            
+            // Filter valid document files
+            const validFiles = files.filter(file => isValidDocumentFile(file));
+            
+            if (validFiles.length === 0) {
+                alert('Please upload valid document files!');
+                return;
+            }
+            
+            selectedDocuments = [...selectedDocuments, ...validFiles];
+            
+            // Show batch conversion section
+            document.getElementById('batchConversion').style.display = 'block';
+            
+            // Hide single file preview
+            document.getElementById('documentPreviewSection').style.display = 'none';
+            
+            // Update batch document list
+            const batchList = document.getElementById('batchDocumentList');
+            batchList.innerHTML = '';
+            
+            selectedDocuments.forEach((file, index) => {
+                const fileDiv = document.createElement('div');
+                fileDiv.className = 'batch-document-item';
+                fileDiv.innerHTML = `
+                    <div class="batch-document-icon">
+                        <i class="fas fa-file-${getFileIcon(file.name)}"></i>
+                    </div>
+                    <div class="batch-document-info">
+                        <strong>${file.name}</strong>
+                        <p>${(file.size / (1024 * 1024)).toFixed(2)} MB • ${file.name.split('.').pop().toUpperCase()}</p>
+                    </div>
+                    <button class="batch-document-remove" onclick="removeBatchDocument(${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                batchList.appendChild(fileDiv);
+            });
+            
+            // Enable convert button
+            document.getElementById('documentConvertBtn').disabled = false;
+        }
+
+        // Remove batch document
+        function removeBatchDocument(index) {
+            selectedDocuments.splice(index, 1);
+            
+            if (selectedDocuments.length === 0) {
+                document.getElementById('batchConversion').style.display = 'none';
+                document.getElementById('documentConvertBtn').disabled = true;
+            } else {
+                // Refresh list
+                handleBatchDocuments({ target: { files: [] } });
+            }
+        }
+
+        // Get file icon based on extension
+        function getFileIcon(filename) {
+            const extension = filename.split('.').pop().toLowerCase();
+            
+            switch(extension) {
+                case 'pdf': return 'pdf';
+                case 'doc':
+                case 'docx': return 'word';
+                case 'txt': return 'alt';
+                case 'ppt':
+                case 'pptx': return 'powerpoint';
+                case 'xls':
+                case 'xlsx': return 'excel';
+                case 'html':
+                case 'htm': return 'code';
+                default: return 'alt';
+            }
+        }
+
+        // Check if file is a valid document
+        function isValidDocumentFile(file) {
+            const validExtensions = ['pdf', 'doc', 'docx', 'txt', 'ppt', 'pptx', 'xls', 'xlsx', 'odt', 'rtf', 'html', 'htm'];
+            const extension = file.name.split('.').pop().toLowerCase();
+            return validExtensions.includes(extension);
+        }
+
+        // Select format
+        function selectFormat(format) {
+            selectedFormat = format;
+            
+            // Update UI
+            document.querySelectorAll('.document-format-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            document.querySelector(`.document-format-option[data-format="${format}"]`).classList.add('selected');
+            
+            // Show/hide OCR section based on format
+            const ocrSection = document.getElementById('ocrSection');
+            if (format === 'txt' || format === 'docx' || format === 'html') {
+                ocrSection.style.display = 'block';
+            } else {
+                ocrSection.style.display = 'none';
+            }
+        }
+
+        // Select page size
+        function selectPageSize(size) {
+            selectedPageSize = size;
+            
+            // Update UI
+            document.querySelectorAll('.page-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            document.querySelector(`.page-option[data-size="${size}"]`).classList.add('selected');
+        }
+
+        // Select OCR option
+        function selectOCR(ocr) {
+            selectedOCR = ocr;
+            
+            // Update UI
+            document.querySelectorAll('.ocr-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            document.querySelector(`.ocr-option[data-ocr="${ocr}"]`).classList.add('selected');
+        }
+
+        // Select quality preset
+        function selectQualityPreset(preset) {
+            // Update UI
+            document.querySelectorAll('.quality-preset').forEach(p => {
+                p.classList.remove('selected');
+            });
+            
+            document.querySelector(`.quality-preset[data-preset="${preset}"]`).classList.add('selected');
+            
+            // Apply preset settings
+            const slider = document.getElementById('imageQualitySlider');
+            switch(preset) {
+                case 'high':
+                    slider.value = 10;
+                    break;
+                case 'medium':
+                    slider.value = 7;
+                    break;
+                case 'low':
+                    slider.value = 4;
+                    break;
+                case 'custom':
+                    // Keep current setting
+                    break;
+            }
+            
+            updateSliderValues();
+        }
+
+        // Update slider value displays
+        function updateSliderValues() {
+            const value = document.getElementById('imageQualitySlider').value;
+            let qualityText = 'Custom';
+            
+            if (value <= 3) qualityText = 'Low';
+            else if (value <= 6) qualityText = 'Medium';
+            else if (value <= 8) qualityText = 'High';
+            else qualityText = 'Maximum';
+            
+            document.getElementById('imageQualityValue').textContent = qualityText;
+        }
+
+        // Start conversion
+        async function startConversion() {
+            if (conversionActive || selectedDocuments.length === 0) return;
+            
+            conversionActive = true;
+            
+            // Show progress section
+            document.getElementById('conversionProgress').style.display = 'block';
+            
+            // Hide other sections
+            document.getElementById('documentPreviewSection').style.display = 'none';
+            document.querySelector('.conversion-settings').style.display = 'none';
+            document.getElementById('batchConversion').style.display = 'none';
+            
+            // Disable convert button
+            document.getElementById('documentConvertBtn').disabled = true;
+            
+            // Call actual API
+            try {
+                const file = selectedDocuments[0];
+                const result = await convertDocument(file, selectedFormat, {
+                    pageRange: document.getElementById('pageRange').value,
+                    imageQuality: document.getElementById('imageQualitySlider').value,
+                    ocr: selectedOCR,
+                    password: document.getElementById('passwordProtect').checked ? document.getElementById('documentPassword').value : null,
+                    embedFonts: document.getElementById('embedFonts').checked
+                }, (progress) => {
+                    document.getElementById('progressPercent').textContent = progress + '%';
+                });
+                
+                if (result.success) {
+                    // Show download section with actual URL
+                    document.getElementById('downloadDocumentBtn').onclick = function() {
+                        window.location.href = result.downloadUrl;
+                    };
+                    completeDocumentConversion();
+                } else {
+                    alert('Conversion failed: ' + (result.error || 'Unknown error'));
+                    conversionActive = false;
+                    document.getElementById('documentConvertBtn').disabled = false;
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+                conversionActive = false;
+                document.getElementById('documentConvertBtn').disabled = false;
+            }
+        }
+
+        // Simulate document conversion
+        function simulateDocumentConversion() {
+            const stages = document.querySelectorAll('.progress-stage-document');
+            const progressStatus = document.getElementById('progressStatus');
+            const timeElapsed = document.getElementById('timeElapsed');
+            const pagesProcessed = document.getElementById('pagesProcessed');
+            const progressFileSize = document.getElementById('progressFileSize');
+            const progressPercent = document.getElementById('progressPercent');
+            
+            let currentStage = 0;
+            let elapsedSeconds = 0;
+            let totalPages = selectedDocuments.length * 5; // Simulated page count
+            let processedPages = 0;
+            
+            // Reset stages
+            stages.forEach(stage => {
+                stage.classList.remove('active', 'completed');
+            });
+            
+            // Start first stage
+            stages[0].classList.add('active');
+            
+            const interval = setInterval(() => {
+                elapsedSeconds++;
+                timeElapsed.textContent = `${elapsedSeconds}s`;
+                
+                // Update progress based on stage
+                switch(currentStage) {
+                    case 0:
+                        progressStatus.textContent = 'Reading document files and analyzing structure...';
+                        progressFileSize.textContent = `${(selectedDocuments.reduce((sum, file) => sum + file.size, 0) / (1024 * 1024)).toFixed(2)} MB`;
+                        break;
+                    case 1:
+                        progressStatus.textContent = 'Processing document content and applying settings...';
+                        if (selectedOCR !== 'none') {
+                            progressStatus.textContent += ` (OCR: ${selectedOCR})`;
+                        }
+                        break;
+                    case 2:
+                        progressStatus.textContent = `Formatting document for ${selectedFormat.toUpperCase()} output...`;
+                        processedPages = Math.min(totalPages, Math.floor(elapsedSeconds * 2));
+                        pagesProcessed.textContent = `${processedPages}/${totalPages}`;
+                        progressPercent.textContent = `${Math.floor((processedPages / totalPages) * 100)}%`;
+                        break;
+                    case 3:
+                        progressStatus.textContent = 'Finalizing conversion and optimizing file...';
+                        break;
+                }
+                
+                // Move to next stage every 8 seconds
+                if (elapsedSeconds % 8 === 0 && currentStage < stages.length - 1) {
+                    stages[currentStage].classList.remove('active');
+                    stages[currentStage].classList.add('completed');
+                    currentStage++;
+                    stages[currentStage].classList.add('active');
+                }
+                
+                // Complete after 32 seconds
+                if (elapsedSeconds >= 32) {
+                    clearInterval(interval);
+                    completeDocumentConversion();
+                }
+            }, 1000);
+        }
+
+        // Complete document conversion
+        function completeDocumentConversion() {
+            // Mark all stages as completed
+            document.querySelectorAll('.progress-stage-document').forEach(stage => {
+                stage.classList.remove('active');
+                stage.classList.add('completed');
+            });
+            
+            // Update progress status
+            document.getElementById('progressStatus').textContent = 'Conversion completed successfully!';
+            
+            // Hide progress after delay
+            setTimeout(() => {
+                document.getElementById('conversionProgress').style.display = 'none';
+                showDownloadSectionDocument();
+            }, 1000);
+        }
+
+        // Show download section for documents
+        function showDownloadSectionDocument() {
+            conversionActive = false;
+            
+            const mainFile = selectedDocuments[0];
+            const originalFormat = mainFile.name.split('.').pop().toUpperCase();
+            
+            // Update conversion details
+            document.getElementById('originalFormat').textContent = originalFormat;
+            document.getElementById('targetFormat').textContent = selectedFormat.toUpperCase();
+            document.getElementById('totalPages').textContent = selectedDocuments.length > 1 ? `${selectedDocuments.length} files` : '10';
+            document.getElementById('ocrApplied').textContent = selectedOCR !== 'none' ? 'Yes' : 'No';
+            
+            const totalSize = selectedDocuments.reduce((sum, file) => sum + file.size, 0);
+            const originalSize = (totalSize / (1024 * 1024)).toFixed(2);
+            const convertedSize = (totalSize * (selectedFormat === 'pdf' ? 0.9 : 0.7) / (1024 * 1024)).toFixed(2);
+            const reduction = ((originalSize - convertedSize) / originalSize * 100).toFixed(0);
+            
+            document.getElementById('originalSize').textContent = originalSize + ' MB';
+            document.getElementById('convertedSize').textContent = convertedSize + ' MB';
+            document.getElementById('sizeReduction').textContent = reduction + '%';
+            document.getElementById('totalTimeTaken').textContent = '32 seconds';
+            
+            // Quality settings
+            const qualityValue = document.getElementById('imageQualitySlider').value;
+            let qualityText = 'Custom';
+            if (qualityValue <= 3) qualityText = 'Low';
+            else if (qualityValue <= 6) qualityText = 'Medium';
+            else if (qualityValue <= 8) qualityText = 'High';
+            else qualityText = 'Maximum';
+            
+            document.getElementById('finalImageQuality').textContent = qualityText;
+            document.getElementById('finalPageSize').textContent = selectedPageSize.toUpperCase();
+            document.getElementById('fontsEmbedded').textContent = document.getElementById('embedFonts').checked ? 'Yes' : 'No';
+            document.getElementById('passwordProtected').textContent = document.getElementById('passwordProtect').checked ? 'Yes' : 'No';
+            
+            // Show download section
+            document.getElementById('downloadSection').classList.add('active');
+            
+            // Scroll to download section
+            document.getElementById('downloadSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Preview converted document
+        function previewConvertedDocument() {
+            if (selectedFormat === 'pdf') {
+                alert('In a real application, this would open a PDF viewer with the converted document.');
+            } else if (selectedFormat === 'html') {
+                alert('In a real application, this would open the HTML file in a browser.');
+            } else {
+                alert('In a real application, this would show a preview of the converted document.');
+            }
+        }
+
+        // Download document
+        function downloadDocument() {
+            const filename = selectedDocuments.length === 1 
+                ? `converted_document.${selectedFormat}`
+                : `converted_documents.zip`;
+            
+            alert(`In a real application, this would download: ${filename}`);
+            
+            // Create a simulated download link
+            const link = document.createElement('a');
+            link.href = '#';
+            link.download = filename;
+            link.click();
+        }
+
+        // Convert another document
+        function convertAnother() {
+            // Reset everything
+            selectedDocumentFile = null;
+            selectedDocuments = [];
+            conversionActive = false;
+            
+            // Reset UI
+            document.getElementById('documentPreviewSection').classList.remove('active');
+            document.getElementById('documentPreviewSection').style.display = 'block';
+            document.querySelector('.conversion-settings').style.display = 'block';
+            document.getElementById('downloadSection').classList.remove('active');
+            document.getElementById('batchConversion').style.display = 'none';
+            document.getElementById('documentConvertBtn').disabled = true;
+            
+            // Reset upload area
+            document.getElementById('documentUploadArea').innerHTML = `
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Drag & Drop your documents here</h3>
+                <p>or click to browse files</p>
+                <p class="file-info">Supports: PDF, DOCX, DOC, TXT, PPT, PPTX, XLS, XLSX, ODT, RTF, HTML</p>
+                <p class="file-info">Max file size: 50MB</p>
+            `;
+            
+            // Clear text preview
+            document.getElementById('textPreview').textContent = '';
+            
+            // Re-initialize drag and drop
+            initializeDragAndDropDocument();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Save to cloud
+        function saveToCloud() {
+            alert('This feature would save your document to cloud storage (Google Drive, Dropbox, etc.) in a real application.');
+        }
+
+        // Share document
+        function shareDocument(method) {
+            const methods = {
+                email: 'Email sharing would be implemented here',
+                link: 'Shareable link generation would be implemented here',
+                drive: 'Google Drive integration would be implemented here',
+                print: 'Print dialog would open here'
+            };
+            
+            alert(methods[method]);
+        }
+
+        // Additional CSS for toggle switches and other elements
+        const additionalStyle = document.createElement('style');
+        additionalStyle.textContent = `
+            .toggle-switch {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin: 0.8rem 0;
+                padding: 0.8rem;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 8px;
+            }
+            
+            .toggle-switch label {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                cursor: pointer;
+            }
+            
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 50px;
+                height: 24px;
+            }
+            
+            .switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+            
+            .switch .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #ccc;
+                transition: .4s;
+                border-radius: 24px;
+            }
+            
+            .switch .slider:before {
+                position: absolute;
+                content: "";
+                height: 16px;
+                width: 16px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: .4s;
+                border-radius: 50%;
+            }
+            
+            .switch input:checked + .slider {
+                background-color: var(--primary-color);
+            }
+            
+            .switch input:checked + .slider:before {
+                transform: translateX(26px);
+            }
+            
+            .share-section {
+                margin-top: 2rem;
+                padding-top: 2rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .share-buttons {
+                display: flex;
+                gap: 1rem;
+                justify-content: center;
+                flex-wrap: wrap;
+                margin-top: 1rem;
+            }
+            
+            .share-btn {
+                background: transparent;
+                border: 1px solid var(--primary-color);
+                color: var(--primary-color);
+                padding: 0.5rem 1.5rem;
+                border-radius: 20px;
+                cursor: pointer;
+                transition: all 0.3s;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .share-btn:hover {
+                background: var(--primary-color);
+                color: white;
+            }
+            
+            .section {
+                margin-bottom: 3rem;
+            }
+            
+            .section h3 {
+                color: var(--primary-color);
+                margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .input-group {
+                margin-top: 0.5rem;
+            }
+            
+            .input-group small {
+                display: block;
+                margin-top: 0.5rem;
+                color: #aaa;
+                font-size: 0.8rem;
+            }
+            
+            .language-selection {
+                margin-top: 1.5rem;
+            }
+            
+            .language-selection select {
+                width: 100%;
+                padding: 0.8rem;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid var(--border-color);
+                border-radius: 5px;
+                color: var(--dark-text);
+                cursor: pointer;
+            }
+            
+            .language-selection select:focus {
+                outline: none;
+                border-color: var(--primary-color);
+            }
+        `;
+        document.head.appendChild(additionalStyle);
+    </script>
+    <script src="frontend/js/converters.js"></script>
+</body>
+</html>
